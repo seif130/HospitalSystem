@@ -1,0 +1,18 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Core/">
+    <Project Path="src/Core/HospitalSystem.Application/HospitalSystem.Application.csproj" />
+    <Project Path="src/Core/HospitalSystem.Domain/HospitalSystem.Domain.csproj" />
+  </Folder>
+  <Folder Name="/src/Infrastructure/">
+    <Project Path="src/Infrastructure/HospitalSystem.Infrastructure/HospitalSystem.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Presentation/">
+    <Project Path="src/Presentation/HospitalSystem.WebApi/HospitalSystem.WebApi.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="HospitalSystem.Application.Tests/HospitalSystem.Application.Tests.csproj" Id="6e3cd80d-6c18-473d-a129-a7c195634a3e" />
+    <Project Path="HospitalSystem.Infrastructure.Tests/HospitalSystem.Infrastructure.Tests.csproj" Id="5c23b493-e41d-42c2-a44b-9eb739227cd5" />
+    <Project Path="tests/HospitalSystem.Domain.Tests/HospitalSystem.Domain.Tests.csproj" />
+  </Folder>
+</Solution>
