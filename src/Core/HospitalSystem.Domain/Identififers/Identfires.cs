@@ -118,8 +118,5 @@ namespace HospitalSystem.Domain.Identififers
     // Procurement
     public sealed record VendorContractId(Guid Value) : TypedId(Value) { public static VendorContractId New() => new(Guid.NewGuid()); }
     public sealed record BudgetId(Guid Value) : TypedId(Value) { public static BudgetId New() => new(Guid.NewGuid()); }
-    public sealed record DiscountAdjustmentId(Guid Value) : TypedId(Value)
-    {
-        public static DiscountAdjustmentId New() => new(Guid.NewGuid());
-    }
+    public sealed record DiscountAdjustmentId(Guid Value) : TypedId(Value) {  public static DiscountAdjustmentId New() => new(Guid.NewGuid()); }
 }
