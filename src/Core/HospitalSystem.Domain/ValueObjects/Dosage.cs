@@ -1,11 +1,11 @@
-﻿using System;
+﻿using HospitalSystem.Domain.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace HospitalSystem.Domain.ValueObjects
 {
-
-    public readonly record struct Dosage
+    public sealed class Dosage : ValueObject
     {
         public decimal Quantity { get; }
         public string Unit { get; }
@@ -18,10 +18,21 @@ namespace HospitalSystem.Domain.ValueObjects
 
         public static Dosage Create(decimal quantity, string unit)
         {
-            if (quantity <= 0) throw new ArgumentOutOfRangeException(nameof(quantity), "Dosage quantity must be positive.");
-            if (string.IsNullOrWhiteSpace(unit)) throw new ArgumentException("Unit is required.", nameof(unit));
+            if (quantity <= 0)
+                throw new DomainException("Dosage quantity must be greater than zero.");
 
-            return new Dosage(quantity, unit.ToLower().Trim());
+            if (string.IsNullOrWhiteSpace(unit))
+                throw new DomainException("Dosage unit is required.");
+
+            return new Dosage(quantity, unit.Trim().ToLowerInvariant());
         }
+
+        protected override IEnumerable<object?> GetEqualityComponents()
+        {
+            yield return Quantity;
+            yield return Unit;
+        }
+
+        public override string ToString() => $"{Quantity} {Unit}";
     }
 }

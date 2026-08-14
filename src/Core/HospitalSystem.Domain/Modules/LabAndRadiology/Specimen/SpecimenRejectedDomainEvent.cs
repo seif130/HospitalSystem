@@ -1,0 +1,11 @@
+﻿using HospitalSystem.Domain.Identififers;
+using HospitalSystem.Domain.Primitives;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace HospitalSystem.Domain.Modules.LabAndRadiology.Specimen
+{
+    public sealed record SpecimenRejectedDomainEvent(SpecimenId SpecimenId, LabOrderId LabOrderId, string Reason) : DomainEvent;
+
+}
