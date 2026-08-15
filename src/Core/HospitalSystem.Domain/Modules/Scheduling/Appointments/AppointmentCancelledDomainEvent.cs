@@ -6,6 +6,6 @@ using System.Text;
 
 namespace HospitalSystem.Domain.Modules.Scheduling.Appointments
 {
-    public sealed record AppointmentCancelledDomainEvent(AppointmentId AppointmentId, PatientId PatientId, DoctorId DoctorId) : DomainEvent;
+    public sealed record AppointmentCancelledDomainEvent(AppointmentId AppointmentId, PatientId PatientId, DoctorId DoctorId , string Reason) : DomainEvent;
 
 }

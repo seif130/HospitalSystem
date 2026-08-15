@@ -1,4 +1,5 @@
 ﻿using HospitalSystem.Domain.Identififers;
+using HospitalSystem.Domain.Modules.Engagement.PatientFeedback.PatientFeedback;
 using HospitalSystem.Domain.Primitives;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ namespace HospitalSystem.Domain.Modules.Engagement.PatientFeedback
             if (string.IsNullOrWhiteSpace(visitContext)) throw new DomainException("Visit context is required.");
             var feedback = new PatientFeedback(PatientFeedbackId.New(), patientId, rating, comments?.Trim(), visitContext);
             if (rating <= 2)
-                feedback.RaiseDomainEvent(new LowPatientFeedbackSubmittedDomainEvent(feedback.Id, patientId, rating));
+                feedback.AddDomainEvent(new LowPatientFeedbackSubmittedDomainEvent(feedback.Id, patientId, rating));
             return feedback;
         }
     }

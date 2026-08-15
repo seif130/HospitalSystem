@@ -1,4 +1,5 @@
 ﻿using HospitalSystem.Domain.Identififers;
+using HospitalSystem.Domain.Modules.FinanceAndInsurance.Invoice.Enum;
 using HospitalSystem.Domain.Primitives;
 using HospitalSystem.Domain.ValueObjects;
 using System;
@@ -48,7 +49,7 @@ namespace HospitalSystem.Domain.Modules.FinanceAndInsurance.Invoice
         {
             if (_lineItems.Count == 0) throw new DomainException("Cannot issue an invoice with no line items.");
             Status = InvoiceStatus.Issued;
-            RaiseDomainEvent(new InvoiceIssuedDomainEvent(Id, PatientId, Total));
+            AddDomainEvent(new InvoiceIssuedDomainEvent(Id, PatientId, Total));
         }
 
         public void ApplyPayment(Money amount)

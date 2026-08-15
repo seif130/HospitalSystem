@@ -33,7 +33,7 @@ namespace HospitalSystem.Domain.Modules.AdministrationHrPayroll.EmploymentContra
         {
             if (IsSigned) throw new DomainException("Contract is already signed.");
             IsSigned = true;
-            RaiseDomainEvent(new EmploymentContractSignedDomainEvent(Id, StaffId));
+            AddDomainEvent(new EmploymentContractSignedDomainEvent(Id, StaffId));
         }
 
         public bool IsExpired(DateTime asOfUtc) => Term.End.HasValue && asOfUtc > Term.End.Value;

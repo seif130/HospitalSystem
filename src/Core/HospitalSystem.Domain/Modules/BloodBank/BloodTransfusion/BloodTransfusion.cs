@@ -43,7 +43,7 @@ namespace HospitalSystem.Domain.Modules.BloodBank.BloodTransfusion
             if (string.IsNullOrWhiteSpace(notes)) throw new DomainException("Reaction notes are required.");
             HadAdverseReaction = true;
             ReactionNotes = notes.Trim();
-            RaiseDomainEvent(new TransfusionAdverseReactionDomainEvent(Id, PatientId, notes));
+            AddDomainEvent(new TransfusionAdverseReactionDomainEvent(Id, PatientId, notes));
         }
     }
 

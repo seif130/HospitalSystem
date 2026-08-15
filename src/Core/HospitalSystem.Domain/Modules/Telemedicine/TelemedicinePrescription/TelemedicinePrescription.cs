@@ -37,7 +37,7 @@ namespace HospitalSystem.Domain.Modules.Telemedicine.TelemedicinePrescription
             if (string.IsNullOrWhiteSpace(dosage)) throw new DomainException("Dosage is required.");
             var prescription = new TelemedicinePrescription(TelemedicinePrescriptionId.New(), sessionId, patientId,
                 prescribingDoctorId, medicationName.Trim(), dosage.Trim(), instructions?.Trim() ?? string.Empty);
-            prescription.RaiseDomainEvent(new TelemedicinePrescriptionIssuedDomainEvent(prescription.Id, sessionId, patientId));
+            prescription.AddDomainEvent(new TelemedicinePrescriptionIssuedDomainEvent(prescription.Id, sessionId, patientId));
             return prescription;
         }
     }

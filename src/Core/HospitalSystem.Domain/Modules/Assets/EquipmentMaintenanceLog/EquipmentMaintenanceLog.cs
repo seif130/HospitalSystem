@@ -1,4 +1,5 @@
-﻿using HospitalSystem.Domain.Primitives;
+﻿using HospitalSystem.Domain.Modules.Assets.EquipmentMaintenanceLog.Enum;
+using HospitalSystem.Domain.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Text;

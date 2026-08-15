@@ -1,4 +1,5 @@
 ﻿using HospitalSystem.Domain.Identififers;
+using HospitalSystem.Domain.Modules.LabAndRadiology.LabResult.Enums;
 using HospitalSystem.Domain.Primitives;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,7 @@ namespace HospitalSystem.Domain.Modules.LabAndRadiology.LabResult
             if (string.IsNullOrWhiteSpace(resultValue)) throw new DomainException("Result value is required.");
             var result = new LabResult(LabResultId.New(), labOrderId, testCode, resultValue, referenceRange, flag, reportedByStaffId);
             if (flag == ResultFlag.Critical)
-                result.RaiseDomainEvent(new CriticalLabResultReportedDomainEvent(result.Id, labOrderId, testCode));
+                result.AddDomainEvent(new CriticalLabResultReportedDomainEvent(result.Id, labOrderId, testCode));
             return result;
         }
     }

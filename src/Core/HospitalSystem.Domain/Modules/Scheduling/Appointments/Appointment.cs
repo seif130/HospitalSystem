@@ -37,7 +37,7 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Appointments
             if (scheduledAtUtc <= DateTime.UtcNow) throw new DomainException("Appointment must be scheduled in the future.");
 
             var appointment = new Appointment(AppointmentId.New(), patientId, doctorId, clinicRoomId, scheduledAtUtc, reason);
-            appointment.RaiseDomainEvent(new AppointmentScheduledDomainEvent(appointment.Id, patientId, doctorId, scheduledAtUtc));
+            appointment.AddDomainEvent(new AppointmentScheduledDomainEvent(appointment.Id, patientId, doctorId, scheduledAtUtc));
             return appointment;
         }
 
@@ -66,7 +66,7 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Appointments
             if (string.IsNullOrWhiteSpace(reason)) throw new DomainException("Cancellation reason is required.");
             Status = AppointmentStatus.Cancelled;
             CancellationReason = reason.Trim();
-            RaiseDomainEvent(new AppointmentCancelledDomainEvent(Id, PatientId, DoctorId));
+            AddDomainEvent(new AppointmentCancelledDomainEvent(Id, PatientId, DoctorId));
         }
 
         public void MarkAsNoShow()

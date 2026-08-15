@@ -1,4 +1,5 @@
 ﻿using HospitalSystem.Domain.Identififers;
+using HospitalSystem.Domain.Modules.Emergency.EmergencyCase.Enum;
 using HospitalSystem.Domain.Modules.Emergency.TriageRecord.Enum;
 using HospitalSystem.Domain.Primitives;
 using System;
@@ -34,7 +35,7 @@ namespace HospitalSystem.Domain.Modules.Emergency.EmergencyCase
             Triage = new TriageRecord(level, assessedByStaffId, presentingComplaint);
             Status = EmergencyCaseStatus.Triaged;
             if (level is TriageLevel.Resuscitation or TriageLevel.Emergent)
-                RaiseDomainEvent(new CriticalEmergencyCaseTriagedDomainEvent(Id, PatientId, level));
+                AddDomainEvent(new CriticalEmergencyCaseTriagedDomainEvent(Id, PatientId, level));
         }
 
         public void BeginTreatment()

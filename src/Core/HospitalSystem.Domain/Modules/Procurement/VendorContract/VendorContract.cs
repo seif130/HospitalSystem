@@ -52,7 +52,7 @@ namespace HospitalSystem.Domain.Modules.Procurement.VendorContract
                 throw new DomainException($"Contract is already {Status}.");
             if (string.IsNullOrWhiteSpace(reason)) throw new DomainException("Termination reason is required.");
             Status = VendorContractStatus.Terminated;
-            RaiseDomainEvent(new VendorContractTerminatedDomainEvent(Id, reason));
+            AddDomainEvent(new VendorContractTerminatedDomainEvent(Id, reason));
         }
     }
 }

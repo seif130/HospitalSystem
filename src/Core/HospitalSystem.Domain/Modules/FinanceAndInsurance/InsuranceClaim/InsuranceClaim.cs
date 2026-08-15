@@ -1,4 +1,5 @@
 ﻿using HospitalSystem.Domain.Identififers;
+using HospitalSystem.Domain.Modules.FinanceAndInsurance.InsuranceClaim.Enum;
 using HospitalSystem.Domain.Primitives;
 using HospitalSystem.Domain.ValueObjects;
 using System;
@@ -32,7 +33,7 @@ namespace HospitalSystem.Domain.Modules.FinanceAndInsurance.InsuranceClaim
         public static InsuranceClaim Submit(InvoiceId invoiceId, PatientId patientId, InsurancePolicyId policyId, Money claimedAmount)
         {
             var claim = new InsuranceClaim(InsuranceClaimId.New(), invoiceId, patientId, policyId, claimedAmount);
-            claim.RaiseDomainEvent(new InsuranceClaimSubmittedDomainEvent(claim.Id, invoiceId, claimedAmount));
+            claim.AddDomainEvent(new InsuranceClaimSubmittedDomainEvent(claim.Id, invoiceId, claimedAmount));
             return claim;
         }
 

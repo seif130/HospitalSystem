@@ -49,7 +49,7 @@ namespace HospitalSystem.Domain.Modules.AdministrationHrPayroll.Payroll
         {
             if (Status != PayrollStatus.Approved) throw new DomainException("Payroll must be approved before it can be paid.");
             Status = PayrollStatus.Paid;
-            RaiseDomainEvent(new PayrollPaidDomainEvent(Id, StaffId, NetAmount));
+            AddDomainEvent(new PayrollPaidDomainEvent(Id, StaffId, NetAmount));
         }
 
         private void EnsureDraft()

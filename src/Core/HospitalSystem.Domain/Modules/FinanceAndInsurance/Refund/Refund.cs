@@ -1,4 +1,5 @@
 ﻿using HospitalSystem.Domain.Identififers;
+using HospitalSystem.Domain.Modules.FinanceAndInsurance.Refund.Enum;
 using HospitalSystem.Domain.Primitives;
 using HospitalSystem.Domain.ValueObjects;
 using System;
@@ -45,7 +46,7 @@ namespace HospitalSystem.Domain.Modules.FinanceAndInsurance.Refund
             if (Status != RefundStatus.Approved) throw new DomainException("Refund must be approved before processing.");
             Status = RefundStatus.Processed;
             ProcessedOnUtc = DateTime.UtcNow;
-            RaiseDomainEvent(new RefundProcessedDomainEvent(Id, OriginalPaymentId, Amount));
+            AddDomainEvent(new RefundProcessedDomainEvent(Id, OriginalPaymentId, Amount));
         }
 
         public void Reject(string reason)

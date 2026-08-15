@@ -40,7 +40,7 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Waitlists
             if (Status != WaitlistEntryStatus.Waiting) throw new DomainException("Only a waiting entry can be offered a slot.");
             OfferedAppointmentId = appointmentId;
             Status = WaitlistEntryStatus.Offered;
-            RaiseDomainEvent(new WaitlistSlotOfferedDomainEvent(Id, PatientId, appointmentId));
+            AddDomainEvent(new WaitlistSlotOfferedDomainEvent(Id, PatientId, appointmentId));
         }
 
         public void ConfirmBooking()

@@ -1,4 +1,5 @@
 ﻿using HospitalSystem.Domain.Identififers;
+using HospitalSystem.Domain.Modules.Compliance.ConsentRecord.Enum;
 using HospitalSystem.Domain.Primitives;
 using System;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace HospitalSystem.Domain.Modules.Compliance.ConsentRecord
         {
             if (string.IsNullOrWhiteSpace(witnessedByStaffId)) throw new DomainException("Witnessing staff member is required.");
             var consent = new ConsentRecord(ConsentRecordId.New(), patientId, type, expiresOnUtc, witnessedByStaffId);
-            consent.RaiseDomainEvent(new ConsentGrantedDomainEvent(consent.Id, patientId, type));
+            consent.AddDomainEvent(new ConsentGrantedDomainEvent(consent.Id, patientId, type));
             return consent;
         }
 
@@ -42,7 +43,7 @@ namespace HospitalSystem.Domain.Modules.Compliance.ConsentRecord
             if (Status != ConsentStatus.Granted) throw new DomainException("Only active consent can be withdrawn.");
             Status = ConsentStatus.Withdrawn;
             WithdrawnOnUtc = DateTime.UtcNow;
-            RaiseDomainEvent(new ConsentWithdrawnDomainEvent(Id, PatientId, Type));
+            AddDomainEvent(new ConsentWithdrawnDomainEvent(Id, PatientId, Type));
         }
 
         public void ExpireIfPastDate(DateTime asOfUtc)

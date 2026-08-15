@@ -30,7 +30,7 @@ namespace HospitalSystem.Domain.Modules.Emergency.AmbulanceDispatch
         {
             if (string.IsNullOrWhiteSpace(pickupAddress)) throw new DomainException("Pickup address is required.");
             var dispatch = new AmbulanceDispatch(AmbulanceDispatchId.New(), ambulanceId, pickupAddress.Trim());
-            dispatch.RaiseDomainEvent(new AmbulanceDispatchedDomainEvent(dispatch.Id, ambulanceId, pickupAddress));
+            dispatch.AddDomainEvent(new AmbulanceDispatchedDomainEvent(dispatch.Id, ambulanceId, pickupAddress));
             return dispatch;
         }
 

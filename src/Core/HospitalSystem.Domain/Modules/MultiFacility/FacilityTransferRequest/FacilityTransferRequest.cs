@@ -34,7 +34,7 @@ namespace HospitalSystem.Domain.Modules.MultiFacility.FacilityTransferRequest
             if (fromFacilityId == toFacilityId) throw new DomainException("Origin and destination facility cannot be the same.");
             if (string.IsNullOrWhiteSpace(reason)) throw new DomainException("Transfer reason is required.");
             var request = new FacilityTransferRequest(FacilityTransferRequestId.New(), patientId, fromFacilityId, toFacilityId, reason.Trim());
-            request.RaiseDomainEvent(new FacilityTransferRequestedDomainEvent(request.Id, patientId, fromFacilityId, toFacilityId));
+            request.AddDomainEvent(new FacilityTransferRequestedDomainEvent(request.Id, patientId, fromFacilityId, toFacilityId));
             return request;
         }
 

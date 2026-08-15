@@ -1,4 +1,5 @@
 ﻿using HospitalSystem.Domain.Identififers;
+using HospitalSystem.Domain.Modules.PharmacyAndInventory.PurchaseOrder.Enums;
 using HospitalSystem.Domain.Primitives;
 using HospitalSystem.Domain.ValueObjects;
 using System;
@@ -43,7 +44,7 @@ namespace HospitalSystem.Domain.Modules.PharmacyAndInventory.PurchaseOrder
         {
             if (_lines.Count == 0) throw new DomainException("Cannot submit a purchase order with no lines.");
             Status = PurchaseOrderStatus.Submitted;
-            RaiseDomainEvent(new PurchaseOrderSubmittedDomainEvent(Id, SupplierId, Total));
+            AddDomainEvent(new PurchaseOrderSubmittedDomainEvent(Id, SupplierId, Total));
         }
 
         public void ReceiveLine(InventoryItemId inventoryItemId, int quantity)

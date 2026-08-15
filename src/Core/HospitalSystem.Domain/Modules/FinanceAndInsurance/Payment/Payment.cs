@@ -31,7 +31,7 @@ namespace HospitalSystem.Domain.Modules.FinanceAndInsurance.Payment
         {
             if (amount.Amount <= 0) throw new DomainException("Payment amount must be greater than zero.");
             var payment = new Payment(PaymentId.New(), invoiceId, amount, method, referenceNumber);
-            payment.RaiseDomainEvent(new PaymentRecordedDomainEvent(payment.Id, invoiceId, amount));
+            payment.AddDomainEvent(new PaymentRecordedDomainEvent(payment.Id, invoiceId, amount));
             return payment;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using HospitalSystem.Domain.Identififers;
+using HospitalSystem.Domain.Modules.Documents.Document.Enum;
 using HospitalSystem.Domain.Primitives;
 using System;
 using System.Collections.Generic;

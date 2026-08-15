@@ -46,7 +46,7 @@ namespace HospitalSystem.Domain.Modules.PharmacyAndInventory.Batch
         public void Recall()
         {
             IsRecalled = true;
-            RaiseDomainEvent(new BatchRecalledDomainEvent(Id, MedicationId, LotNumber));
+            AddDomainEvent(new BatchRecalledDomainEvent(Id, MedicationId, LotNumber));
         }
     }
 }

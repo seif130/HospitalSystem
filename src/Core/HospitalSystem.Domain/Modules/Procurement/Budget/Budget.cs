@@ -41,7 +41,7 @@ namespace HospitalSystem.Domain.Modules.Procurement.Budget
             var projectedSpend = SpentAmount.Add(amount);
             _expenses.Add(new BudgetExpenseLine(description.Trim(), amount, DateTime.UtcNow));
             if (projectedSpend.Amount > AllocatedAmount.Amount)
-                RaiseDomainEvent(new BudgetOverspentDomainEvent(Id, DepartmentId, projectedSpend, AllocatedAmount));
+                AddDomainEvent(new BudgetOverspentDomainEvent(Id, DepartmentId, projectedSpend, AllocatedAmount));
         }
     }
 }

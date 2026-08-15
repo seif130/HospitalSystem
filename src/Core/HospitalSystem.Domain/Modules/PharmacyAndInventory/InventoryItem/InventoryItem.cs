@@ -46,7 +46,7 @@ namespace HospitalSystem.Domain.Modules.PharmacyAndInventory.InventoryItem
             if (quantity > QuantityOnHand) throw new DomainException("Cannot dispense more than the quantity on hand.");
             QuantityOnHand -= quantity;
             if (QuantityOnHand <= ReorderLevel)
-                RaiseDomainEvent(new InventoryItemBelowReorderLevelDomainEvent(Id, QuantityOnHand, ReorderLevel));
+                AddDomainEvent(new InventoryItemBelowReorderLevelDomainEvent(Id, QuantityOnHand, ReorderLevel));
         }
     }
 }

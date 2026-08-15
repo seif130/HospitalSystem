@@ -35,7 +35,7 @@ namespace HospitalSystem.Domain.Modules.AdministrationHrPayroll.RoomBed
             if (Status != BedStatus.Available) throw new DomainException($"Bed {BedNumber} is not available (currently {Status}).");
             Status = BedStatus.Reserved;
             OccupiedByPatientId = patientId;
-            RaiseDomainEvent(new RoomBedReservedDomainEvent(Id, patientId));
+            AddDomainEvent(new RoomBedReservedDomainEvent(Id, patientId));
         }
 
         public void Occupy()

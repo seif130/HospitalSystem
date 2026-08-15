@@ -1,4 +1,5 @@
 ﻿using HospitalSystem.Domain.Identififers;
+using HospitalSystem.Domain.Modules.LabAndRadiology.Specimen.Enums;
 using HospitalSystem.Domain.Primitives;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ namespace HospitalSystem.Domain.Modules.LabAndRadiology.Specimen
         {
             if (string.IsNullOrWhiteSpace(collectedByStaffId)) throw new DomainException("Collecting staff member is required.");
             var specimen = new Specimen(SpecimenId.New(), labOrderId, patientId, type, collectedByStaffId);
-            specimen.RaiseDomainEvent(new SpecimenCollectedDomainEvent(specimen.Id, labOrderId));
+            specimen.AddDomainEvent(new SpecimenCollectedDomainEvent(specimen.Id, labOrderId));
             return specimen;
         }
 
@@ -54,7 +55,7 @@ namespace HospitalSystem.Domain.Modules.LabAndRadiology.Specimen
             if (string.IsNullOrWhiteSpace(reason)) throw new DomainException("Rejection reason is required.");
             Status = SpecimenStatus.Rejected;
             RejectionReason = reason.Trim();
-            RaiseDomainEvent(new SpecimenRejectedDomainEvent(Id, LabOrderId, reason));
+            AddDomainEvent(new SpecimenRejectedDomainEvent(Id, LabOrderId, reason));
         }
 
         public void MarkProcessed()

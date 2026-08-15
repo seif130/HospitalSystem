@@ -1,4 +1,5 @@
 ﻿using HospitalSystem.Domain.Identififers;
+using HospitalSystem.Domain.Modules.AdministrationHrPayroll.Staff.Enums;
 using HospitalSystem.Domain.Primitives;
 using HospitalSystem.Domain.ValueObjects;
 using System;
@@ -56,7 +57,7 @@ namespace HospitalSystem.Domain.Modules.AdministrationHrPayroll.Staff
         {
             if (Status == EmploymentStatus.Terminated) throw new DomainException("Staff member is already terminated.");
             Status = EmploymentStatus.Terminated;
-            RaiseDomainEvent(new StaffTerminatedDomainEvent(Id));
+            AddDomainEvent(new StaffTerminatedDomainEvent(Id));
         }
 
         private void EnsureActiveOrOnLeave()

@@ -36,7 +36,7 @@ namespace HospitalSystem.Domain.Modules.Engagement.Complaint
             if (string.IsNullOrWhiteSpace(description)) throw new DomainException("Complaint description is required.");
             var complaint = new Complaint(ComplaintId.New(), patientId, subject.Trim(), description.Trim(), severity);
             if (severity == ComplaintSeverity.Critical)
-                complaint.RaiseDomainEvent(new CriticalComplaintRaisedDomainEvent(complaint.Id, patientId, subject));
+                complaint.AddDomainEvent(new CriticalComplaintRaisedDomainEvent(complaint.Id, patientId, subject));
             return complaint;
         }
 

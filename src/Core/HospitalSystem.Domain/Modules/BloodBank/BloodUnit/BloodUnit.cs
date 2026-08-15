@@ -1,5 +1,6 @@
 ﻿using HospitalSystem.Domain.Enums;
 using HospitalSystem.Domain.Identififers;
+using HospitalSystem.Domain.Modules.BloodBank.BloodUnit.Enum;
 using HospitalSystem.Domain.Primitives;
 using System;
 using System.Collections.Generic;
@@ -63,7 +64,7 @@ namespace HospitalSystem.Domain.Modules.BloodBank.BloodUnit
         {
             if (Status == BloodUnitStatus.Transfused) throw new DomainException("Cannot discard an already-transfused unit.");
             Status = BloodUnitStatus.Discarded;
-            RaiseDomainEvent(new BloodUnitDiscardedDomainEvent(Id, reason));
+            AddDomainEvent(new BloodUnitDiscardedDomainEvent(Id, reason));
         }
     }
 }

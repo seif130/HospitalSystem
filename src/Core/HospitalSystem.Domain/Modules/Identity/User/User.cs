@@ -1,4 +1,5 @@
 ﻿using HospitalSystem.Domain.Identififers;
+using HospitalSystem.Domain.Modules.Identity.User.Enum;
 using HospitalSystem.Domain.Primitives;
 using HospitalSystem.Domain.ValueObjects;
 using System;
@@ -33,7 +34,7 @@ namespace HospitalSystem.Domain.Modules.Identity.User
         {
             if (string.IsNullOrWhiteSpace(passwordHash)) throw new DomainException("Password hash is required.");
             var user = new User(UserId.New(), email, passwordHash, linkedStaffId);
-            user.RaiseDomainEvent(new UserRegisteredDomainEvent(user.Id, email));
+            user.AddDomainEvent(new UserRegisteredDomainEvent(user.Id, email));
             return user;
         }
 
@@ -64,7 +65,7 @@ namespace HospitalSystem.Domain.Modules.Identity.User
             if (FailedLoginAttempts >= 5)
             {
                 Status = UserAccountStatus.Locked;
-                RaiseDomainEvent(new UserAccountLockedDomainEvent(Id));
+                AddDomainEvent(new UserAccountLockedDomainEvent(Id));
             }
         }
 

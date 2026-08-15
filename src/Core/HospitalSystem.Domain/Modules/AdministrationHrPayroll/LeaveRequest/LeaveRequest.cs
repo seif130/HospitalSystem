@@ -1,4 +1,5 @@
 ﻿using HospitalSystem.Domain.Identififers;
+using HospitalSystem.Domain.Modules.AdministrationHrPayroll.LeaveRequest.Enum;
 using HospitalSystem.Domain.Primitives;
 using HospitalSystem.Domain.ValueObjects;
 using System;
@@ -38,7 +39,7 @@ namespace HospitalSystem.Domain.Modules.AdministrationHrPayroll.LeaveRequest
             if (Status != LeaveRequestStatus.Pending) throw new DomainException("Only a pending leave request can be approved.");
             Status = LeaveRequestStatus.Approved;
             ReviewedByStaffId = reviewedByStaffId;
-            RaiseDomainEvent(new LeaveRequestApprovedDomainEvent(Id, StaffId, Period));
+            AddDomainEvent(new LeaveRequestApprovedDomainEvent(Id, StaffId, Period));
         }
 
         public void Reject(string reviewedByStaffId, string reason)

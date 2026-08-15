@@ -68,7 +68,7 @@ namespace HospitalSystem.Domain.Modules.Assets.MedicalEquipment
         public void TakeOutOfService(string reason)
         {
             Status = EquipmentStatus.OutOfService;
-            RaiseDomainEvent(new EquipmentTakenOutOfServiceDomainEvent(Id, reason));
+            AddDomainEvent(new EquipmentTakenOutOfServiceDomainEvent(Id, reason));
         }
 
         public void Retire() => Status = EquipmentStatus.Retired;

@@ -1,43 +1,63 @@
 using HospitalSystem.Application;
-using HospitalSystem.Application.Modules.Administration.Departments.Commands.CreateDepartment;
+using HospitalSystem.Domain.Primitives;
 using HospitalSystem.Infrastructure;
-using HospitalSystem.WebApi.Endpoints.Administration;
-using Scalar.AspNetCore;
-using Swashbuckle.AspNetCore.SwaggerUI;
+using HospitalSystem.WebApi;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddInfrastructureServices(builder.Configuration);
 
-builder.Services.AddApplicationServices();
+
+builder.Services
+    .AddSchedulingInfrastructure(builder.Configuration)
+    .AddSchedulingApplication();
+
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.ConfigureHttpJsonOptions(options =>
+builder.Services.AddSwaggerGen(options =>
 {
-    options.SerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    options.SwaggerDoc("v1", new() { Title = "Hospital Management System API", Version = "v1" });
 });
+
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.MapScalarApiReference(options =>
-    {
-        options.Title = "Hospital System API";
-        options.Theme = ScalarTheme.Purple; 
-    });
-
-
+    app.UseSwaggerUI();
 }
+
+
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        var exceptionFeature = context.Features.Get<IExceptionHandlerFeature>();
+        var exception = exceptionFeature?.Error;
+
+        var (statusCode, title) = exception switch
+        {
+            DomainException domainEx => (StatusCodes.Status409Conflict, "Domain rule violated"),
+            _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred"),
+        };
+
+        context.Response.StatusCode = statusCode;
+        await Results.Problem(title: title, detail: exception?.Message, statusCode: statusCode)
+            .ExecuteAsync(context);
+    });
+});
 
 app.UseHttpsRedirection();
 
-app.MapDepartmentsEndpoints();
+
+app.MapSchedulingEndpoints();
+
+
+app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestampUtc = DateTime.UtcNow }))
+   .WithTags("Health");
 
 app.Run();
-
-

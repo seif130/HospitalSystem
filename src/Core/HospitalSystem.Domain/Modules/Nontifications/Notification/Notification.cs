@@ -1,4 +1,5 @@
 ﻿using HospitalSystem.Domain.Identififers;
+using HospitalSystem.Domain.Modules.Nontifications.Notification.Enums;
 using HospitalSystem.Domain.Modules.Nontifications.NotificationTemplate.Enum;
 using HospitalSystem.Domain.Primitives;
 using System;
