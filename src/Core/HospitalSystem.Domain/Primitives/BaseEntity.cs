@@ -12,8 +12,9 @@ namespace HospitalSystem.Domain.Common
         public TId Id { get; protected set; } = default!;
 
         // Audit Fields
-        public DateTime CreatedAt { get; protected set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; protected set; }
         public string? CreatedBy { get; protected set; }
+
         public DateTime? LastModifiedAt { get; protected set; }
         public string? LastModifiedBy { get; protected set; }
 
@@ -22,48 +23,102 @@ namespace HospitalSystem.Domain.Common
         public DateTime? DeletedAt { get; protected set; }
         public string? DeletedBy { get; protected set; }
 
-        protected BaseEntity(TId id) => Id = id;
-        protected BaseEntity() { } // Required by EF Core
 
-        // Domain Events Management
-        public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+        // Domain Events
+        public IReadOnlyCollection<IDomainEvent> DomainEvents
+            => _domainEvents.AsReadOnly();
 
-        public void AddDomainEvent(IDomainEvent domainEvent) => _domainEvents.Add(domainEvent);
-        public void RemoveDomainEvent(IDomainEvent domainEvent) => _domainEvents.Remove(domainEvent);
-        public void ClearDomainEvents() => _domainEvents.Clear();
+        protected void AddDomainEvent(IDomainEvent domainEvent)
+        {
+            ArgumentNullException.ThrowIfNull(domainEvent);
+
+            _domainEvents.Add(domainEvent);
+        }
+
+        protected void RemoveDomainEvent(IDomainEvent domainEvent)
+        {
+            _domainEvents.Remove(domainEvent);
+        }
+
+        public void ClearDomainEvents()
+        {
+            _domainEvents.Clear();
+        }
+
+
+
+        protected BaseEntity(TId id)
+        {
+            Id = id;
+        }
+
+        protected BaseEntity()
+        {
+            // Required by EF Core
+        }
 
         // Soft Delete Behaviors
+
         public virtual void SoftDelete(string? deletedBy = null)
         {
+            if (IsDeleted)
+                return;
+
+            var now = DateTime.UtcNow;
+
             IsDeleted = true;
-            DeletedAt = DateTime.UtcNow;
+            DeletedAt = now;
             DeletedBy = deletedBy;
-            LastModifiedAt = DateTime.UtcNow;
+            LastModifiedAt = now;
             LastModifiedBy = deletedBy;
         }
 
         public virtual void UndoDelete(string? restoredBy = null)
         {
+            if (!IsDeleted)
+                return;
+
+            var now = DateTime.UtcNow;
+
             IsDeleted = false;
             DeletedAt = null;
             DeletedBy = null;
-            LastModifiedAt = DateTime.UtcNow;
+
+            LastModifiedAt = now;
             LastModifiedBy = restoredBy;
         }
 
-        // Equality Comparison
+        // Equality
+
         public bool Equals(BaseEntity<TId>? other)
         {
-            if (other is null) return false;
-            if (ReferenceEquals(this, other)) return true;
-            if (GetType() != other.GetType()) return false;
-            return Id.Equals(other.Id);
+            if (other is null)
+                return false;
+
+            if (ReferenceEquals(this, other))
+                return true;
+
+            if (GetType() != other.GetType())
+                return false;
+
+            return EqualityComparer<TId>.Default.Equals(Id, other.Id);
         }
 
-        public override bool Equals(object? obj) => Equals(obj as BaseEntity<TId>);
-        public override int GetHashCode() => (GetType(), Id).GetHashCode();
+        public override bool Equals(object? obj)
+            => obj is BaseEntity<TId> other && Equals(other);
 
-        public static bool operator ==(BaseEntity<TId>? a, BaseEntity<TId>? b) => a is null ? b is null : a.Equals(b);
-        public static bool operator !=(BaseEntity<TId>? a, BaseEntity<TId>? b) => !(a == b);
+        public override int GetHashCode()
+            => HashCode.Combine(GetType(), Id);
+
+        public static bool operator ==(
+            BaseEntity<TId>? left,
+            BaseEntity<TId>? right)
+            => left is null ? right is null : left.Equals(right);
+
+        public static bool operator !=(
+            BaseEntity<TId>? left,
+            BaseEntity<TId>? right)
+            => !(left == right);
     }
+
 }

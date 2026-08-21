@@ -8,4 +8,5 @@ namespace HospitalSystem.Domain.Primitives
     {
         public override string ToString() => Value.ToString();
     }
+
 }

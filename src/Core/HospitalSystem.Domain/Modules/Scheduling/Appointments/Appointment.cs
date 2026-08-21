@@ -1,7 +1,7 @@
-﻿using HospitalSystem.Domain.Identififers;
+﻿using HospitalSystem.Domain.Identifiers;
+using HospitalSystem.Domain.Modules.Scheduling.Appointments.Appointment_Events;
 using HospitalSystem.Domain.Modules.Scheduling.Appointments.Enums;
 using HospitalSystem.Domain.Primitives;
-using HospitalSystem.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,72 +13,136 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Appointments
         public PatientId PatientId { get; private set; } = null!;
         public DoctorId DoctorId { get; private set; } = null!;
         public ClinicRoomId ClinicRoomId { get; private set; } = null!;
+
         public DateTime ScheduledAtUtc { get; private set; }
+
         public AppointmentStatus Status { get; private set; }
+
         public string? Reason { get; private set; }
         public string? CancellationReason { get; private set; }
 
-        private Appointment() { }
 
-        private Appointment(AppointmentId id, PatientId patientId, DoctorId doctorId, ClinicRoomId clinicRoomId,
-            DateTime scheduledAtUtc, string? reason) : base(id)
+        private Appointment()
+        {
+        }
+
+        private Appointment(
+            AppointmentId id,
+            PatientId patientId,
+            DoctorId doctorId,
+            ClinicRoomId clinicRoomId,
+            DateTime scheduledAtUtc,
+            string? reason)
+            : base(id)
         {
             PatientId = patientId;
             DoctorId = doctorId;
             ClinicRoomId = clinicRoomId;
             ScheduledAtUtc = scheduledAtUtc;
-            Reason = reason;
+            Reason = NormalizeOptional(reason);
             Status = AppointmentStatus.Scheduled;
         }
 
-        public static Appointment Schedule(PatientId patientId, DoctorId doctorId, ClinicRoomId clinicRoomId,
-            DateTime scheduledAtUtc, string? reason = null)
+        public static Appointment Schedule(
+            PatientId patientId,
+            DoctorId doctorId,
+            ClinicRoomId clinicRoomId,
+            DateTime scheduledAtUtc,
+            string? reason = null)
         {
-            if (scheduledAtUtc <= DateTime.UtcNow) throw new DomainException("Appointment must be scheduled in the future.");
+            if (scheduledAtUtc <= DateTime.UtcNow)
+                throw new DomainException( "Appointment must be scheduled in the future.");
 
-            var appointment = new Appointment(AppointmentId.New(), patientId, doctorId, clinicRoomId, scheduledAtUtc, reason);
-            appointment.AddDomainEvent(new AppointmentScheduledDomainEvent(appointment.Id, patientId, doctorId, scheduledAtUtc));
+            var appointment = new Appointment(
+                AppointmentId.New(),
+                patientId,
+                doctorId,
+                clinicRoomId,
+                scheduledAtUtc,
+                reason);
+
+            appointment.AddDomainEvent( new AppointmentScheduledEvent(
+                    appointment.Id,patientId, doctorId, scheduledAtUtc));
+
             return appointment;
         }
 
         public void Reschedule(DateTime newTimeUtc)
         {
             EnsureModifiable();
-            if (newTimeUtc <= DateTime.UtcNow) throw new DomainException("New appointment time must be in the future.");
+
+            if (newTimeUtc <= DateTime.UtcNow)
+                throw new DomainException( "New appointment time must be in the future.");
+
+            var oldTimeUtc = ScheduledAtUtc;
+
             ScheduledAtUtc = newTimeUtc;
+
+            AddDomainEvent(
+                new AppointmentRescheduledEvent(Id, PatientId, DoctorId,oldTimeUtc, newTimeUtc));
         }
 
         public void CheckIn()
         {
-            if (Status != AppointmentStatus.Scheduled) throw new DomainException("Only a scheduled appointment can be checked in.");
+            if (Status != AppointmentStatus.Scheduled)
+                throw new DomainException( "Only a scheduled appointment can be checked in.");
+
             Status = AppointmentStatus.CheckedIn;
+
+            AddDomainEvent( new AppointmentCheckedInEvent(  Id,  PatientId, DoctorId));
         }
 
         public void Complete()
         {
-            if (Status != AppointmentStatus.CheckedIn) throw new DomainException("Only a checked-in appointment can be completed.");
+            if (Status != AppointmentStatus.CheckedIn)
+                throw new DomainException("Only a checked-in appointment can be completed.");
+
             Status = AppointmentStatus.Completed;
+
+            AddDomainEvent(
+                new AppointmentCompletedEvent( Id, PatientId, DoctorId));
         }
 
         public void Cancel(string reason)
         {
             EnsureModifiable();
-            if (string.IsNullOrWhiteSpace(reason)) throw new DomainException("Cancellation reason is required.");
+
+            if (string.IsNullOrWhiteSpace(reason))
+                throw new DomainException( "Cancellation reason is required.");
+
+            var cancellationReason = reason.Trim();
+
             Status = AppointmentStatus.Cancelled;
-            CancellationReason = reason.Trim();
-            AddDomainEvent(new AppointmentCancelledDomainEvent(Id, PatientId, DoctorId));
+            CancellationReason = cancellationReason;
+
+            AddDomainEvent(
+                new AppointmentCancelledEvent(  Id, PatientId, DoctorId,cancellationReason));
         }
 
         public void MarkAsNoShow()
         {
-            if (Status != AppointmentStatus.Scheduled) throw new DomainException("Only a scheduled appointment can be marked as no-show.");
+            if (Status != AppointmentStatus.Scheduled)
+                throw new DomainException("Only a scheduled appointment can be marked as no-show.");
+
             Status = AppointmentStatus.NoShow;
+
+            AddDomainEvent( new AppointmentNoShowEvent(Id, PatientId, DoctorId));
         }
 
         private void EnsureModifiable()
         {
-            if (Status is AppointmentStatus.Completed or AppointmentStatus.Cancelled)
-                throw new DomainException($"Cannot modify an appointment that is already {Status}.");
+            if (Status is AppointmentStatus.Completed
+                or AppointmentStatus.Cancelled or AppointmentStatus.NoShow)
+            {
+                throw new DomainException( $"Cannot modify an appointment that is already {Status}.");
+            }
+        }
+
+        private static string? NormalizeOptional(string? value)
+        {
+            return string.IsNullOrWhiteSpace(value) ? null  : value.Trim();
         }
     }
+
+
 }
