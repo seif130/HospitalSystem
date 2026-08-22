@@ -4,8 +4,9 @@ using System.Text;
 
 namespace HospitalSystem.Application.Modules.Scheduling.Specialty.Dto
 {
-
     public sealed record SpecialtyDto(
         Guid Id,
-        string Name);
+        string Name,
+        string? Description,
+        bool IsActive);
 }

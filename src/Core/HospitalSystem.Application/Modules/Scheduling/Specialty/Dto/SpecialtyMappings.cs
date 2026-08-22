@@ -9,9 +9,13 @@ namespace HospitalSystem.Application.Modules.Scheduling.Specialties;
 
 public static class SpecialtyMappings
 {
-    public static SpecialtyDto ToDto(this SpecialtyEntity specialty)
-
+    public static SpecialtyDto ToDto(
+        this SpecialtyEntity specialty)
     {
-        return new SpecialtyDto(specialty.Id.Value,specialty.Name);
+        return new SpecialtyDto(
+            specialty.Id.Value,
+            specialty.Name,
+            specialty.Description,
+            specialty.IsActive);
     }
 }

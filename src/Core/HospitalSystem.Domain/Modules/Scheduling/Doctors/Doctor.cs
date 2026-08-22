@@ -11,34 +11,57 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Doctors
     public sealed class Doctor : AggregateRoot<DoctorId>
     {
         public PersonName Name { get; private set; } = null!;
+
         public MedicalSpecialty Specialty { get; private set; }
+
         public DepartmentId DepartmentId { get; private set; } = null!;
+
         public string LicenseNumber { get; private set; } = null!;
 
         private Doctor()
         {
         }
 
-        private Doctor( DoctorId id, PersonName name, MedicalSpecialty specialty,
-            DepartmentId departmentId,string licenseNumber) : base(id)
+        private Doctor(
+            DoctorId id,
+            PersonName name,
+            MedicalSpecialty specialty,
+            DepartmentId departmentId,
+            string licenseNumber)
+            : base(id)
         {
             Name = name;
             Specialty = specialty;
             DepartmentId = departmentId;
-            LicenseNumber = licenseNumber;
+            LicenseNumber = NormalizeLicenseNumber(licenseNumber);
         }
 
-        public static Doctor Register( PersonName name, MedicalSpecialty specialty,
-            DepartmentId departmentId, string licenseNumber )
+        public static Doctor Register(
+            PersonName name,
+            MedicalSpecialty specialty,
+            DepartmentId departmentId,
+            string licenseNumber)
         {
-            if (string.IsNullOrWhiteSpace(licenseNumber))
-                throw new DomainException("License number is required.");
+            ArgumentNullException.ThrowIfNull(name);
 
-            return new Doctor( DoctorId.New(),name,specialty, departmentId,licenseNumber.Trim());
+            if (string.IsNullOrWhiteSpace(licenseNumber))
+            {
+                throw new DomainException(
+                    "License number is required.");
+            }
+
+            return new Doctor(
+                DoctorId.New(),
+                name,
+                specialty,
+                departmentId,
+                licenseNumber);
         }
 
         public void ChangeName(PersonName name)
         {
+            ArgumentNullException.ThrowIfNull(name);
+
             Name = name;
         }
 
@@ -55,10 +78,18 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Doctors
         public void ChangeLicenseNumber(string licenseNumber)
         {
             if (string.IsNullOrWhiteSpace(licenseNumber))
-                throw new DomainException("License number is required.");
+            {
+                throw new DomainException(
+                    "License number is required.");
+            }
 
-            LicenseNumber = licenseNumber.Trim();
+            LicenseNumber = NormalizeLicenseNumber(licenseNumber);
         }
-    }
 
+        private static string NormalizeLicenseNumber(string value)
+        {
+            return value.Trim();
+        }
+
+    }
 }

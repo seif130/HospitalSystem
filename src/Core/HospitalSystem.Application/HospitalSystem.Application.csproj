@@ -12,10 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Modules\Scheduling\Specialty\Command\DeleteSpecialty\" />
-    <Folder Include="Modules\Scheduling\Specialty\Command\UpdateSpecialty\" />
-    <Folder Include="Modules\Scheduling\Specialty\Quires\GetSpecialtyById\" />
-    <Folder Include="Modules\Scheduling\Specialty\Quires\GetSpecialties\" />
     <Folder Include="Modules\Scheduling\Waitlists\Command\NotifyWaitlistEntryCommand\" />
   </ItemGroup>
 

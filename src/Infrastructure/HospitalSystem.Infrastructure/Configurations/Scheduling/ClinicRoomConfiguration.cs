@@ -1,6 +1,5 @@
 ﻿using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Modules.Scheduling.ClinicRooms;
-using HospitalSystem.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -40,36 +39,9 @@ namespace HospitalSystem.Infrastructure.Configurations.Scheduling
             {
                 x.DepartmentId,
                 x.RoomNumber
-            })
-            .IsUnique();
-
-            // Room Bookings
-
-            builder.OwnsMany<DateRange>(
-                "_bookings",
-                booking =>
-                {
-                    booking.ToTable("ClinicRoomBookings");
-
-                    booking.WithOwner()
-                        .HasForeignKey("ClinicRoomId");
-
-                    booking.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    booking.HasKey("Id");
-
-                    booking.Property(x => x.Start)
-                        .HasColumnName("StartUtc")
-                        .IsRequired();
-
-                    booking.Property(x => x.End)
-                        .HasColumnName("EndUtc");
-                });
-
-            builder.Navigation("_bookings")
-                .UsePropertyAccessMode(PropertyAccessMode.Field);
+            }).IsUnique();
         }
     }
-
 }
+
+

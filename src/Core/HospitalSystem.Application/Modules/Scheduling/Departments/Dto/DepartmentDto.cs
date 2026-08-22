@@ -6,6 +6,7 @@ namespace HospitalSystem.Application.Modules.Scheduling.Departments.Dto
 {
     public sealed record DepartmentDto(
         Guid Id,
-        string Name);
+        string Name,
+        string? Description);
 
 }

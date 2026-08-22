@@ -11,7 +11,9 @@ namespace HospitalSystem.Infrastructure.Repositories.Scheduling
 {
     public sealed class DepartmentRepository: Repository<Department, DepartmentId>,IDepartmentRepository
     {
-        public DepartmentRepository(SchedulingDbContext context): base(context)
+        public DepartmentRepository(
+            SchedulingDbContext context)
+            : base(context)
         {
         }
 
@@ -19,17 +21,26 @@ namespace HospitalSystem.Infrastructure.Repositories.Scheduling
             string name,
             CancellationToken ct = default)
         {
+            if (string.IsNullOrWhiteSpace(name))
+                return Task.FromResult(false);
+
             var normalized = name.Trim();
 
-            return DbSet.AnyAsync(x => x.Name == normalized,ct);
+            return DbSet.AnyAsync(
+                x => x.Name == normalized,
+                ct);
         }
 
-        public async Task<IReadOnlyList<Department>> GetAllAsync(CancellationToken ct = default)
+        public async Task<IReadOnlyList<Department>> GetAllAsync(
+            CancellationToken ct = default)
         {
             return await DbSet
-                .AsNoTracking().OrderBy(x => x.Name).ToListAsync(ct);
+                .AsNoTracking()
+                .OrderBy(x => x.Name)
+                .ToListAsync(ct);
         }
     }
+
 
 
 }

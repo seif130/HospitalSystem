@@ -11,7 +11,8 @@ namespace HospitalSystem.Application.Modules.Scheduling.Departments.Dto
         {
             return new DepartmentDto(
                 department.Id.Value,
-                department.Name);
+                department.Name,
+                department.Description);
         }
     }
 

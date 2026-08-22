@@ -9,14 +9,12 @@ using System.Text;
 
 namespace HospitalSystem.Application.Modules.Scheduling.ClinicRooms.Commands.ChangeClinicRoomDepartment
 {
-    public sealed class ChangeClinicRoomDepartmentCommandHandler
-        : ICommandHandler<ChangeClinicRoomDepartmentCommand>
+    public sealed class ChangeClinicRoomDepartmentCommandHandler: ICommandHandler<ChangeClinicRoomDepartmentCommand>
     {
         private readonly IClinicRoomRepository _rooms;
         private readonly IDepartmentRepository _departments;
 
-        public ChangeClinicRoomDepartmentCommandHandler(
-            IClinicRoomRepository rooms,
+        public ChangeClinicRoomDepartmentCommandHandler(IClinicRoomRepository rooms,
             IDepartmentRepository departments)
         {
             _rooms = rooms;
@@ -54,6 +52,11 @@ namespace HospitalSystem.Application.Modules.Scheduling.ClinicRooms.Commands.Cha
                         "Department was not found."));
             }
 
+            if (room.DepartmentId == departmentId)
+            {
+                return Result.Success();
+            }
+
             var exists = await _rooms.ExistsByRoomNumberAsync(
                 room.RoomNumber,
                 departmentId,
@@ -72,5 +75,6 @@ namespace HospitalSystem.Application.Modules.Scheduling.ClinicRooms.Commands.Cha
             return Result.Success();
         }
     }
-
 }
+
+

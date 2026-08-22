@@ -14,6 +14,7 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Doctors
         public DayOfWeek DayOfWeek { get; private set; }
 
         public TimeSpan StartTime { get; private set; }
+
         public TimeSpan EndTime { get; private set; }
 
         private DoctorSchedule()
@@ -40,10 +41,30 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Doctors
             TimeSpan startTime,
             TimeSpan endTime)
         {
-            if (endTime <= startTime)
-                throw new DomainException("Schedule end time must be after start time.");
+            if (startTime < TimeSpan.Zero)
+            {
+                throw new DomainException(
+                    "Schedule start time cannot be negative.");
+            }
 
-            return new DoctorSchedule(DoctorScheduleId.New(),doctorId, dayOfWeek,startTime,endTime);
+            if (endTime <= startTime)
+            {
+                throw new DomainException(
+                    "Schedule end time must be after start time.");
+            }
+
+            if (endTime > TimeSpan.FromDays(1))
+            {
+                throw new DomainException(
+                    "Schedule end time cannot exceed 24 hours.");
+            }
+
+            return new DoctorSchedule(
+                DoctorScheduleId.New(),
+                doctorId,
+                dayOfWeek,
+                startTime,
+                endTime);
         }
     }
 

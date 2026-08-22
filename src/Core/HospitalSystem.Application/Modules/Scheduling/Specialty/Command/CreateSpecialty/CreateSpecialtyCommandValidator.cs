@@ -3,12 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace HospitalSystem.Application.Modules.Scheduling.Departments.Command.CreateDepartment
+namespace HospitalSystem.Application.Modules.Scheduling.Specialty.Command.CreateSpecialty
 {
-    public sealed class CreateDepartmentCommandValidator
-        : AbstractValidator<CreateDepartmentCommand>
+    public sealed class CreateSpecialtyCommandValidator
+           : AbstractValidator<CreateSpecialtyCommand>
     {
-        public CreateDepartmentCommandValidator()
+        public CreateSpecialtyCommandValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty()
@@ -18,5 +18,4 @@ namespace HospitalSystem.Application.Modules.Scheduling.Departments.Command.Crea
                 .MaximumLength(500);
         }
     }
-
 }

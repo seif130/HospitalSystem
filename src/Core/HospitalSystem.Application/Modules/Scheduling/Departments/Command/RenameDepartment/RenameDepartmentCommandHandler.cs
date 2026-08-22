@@ -9,7 +9,7 @@ using System.Text;
 namespace HospitalSystem.Application.Modules.Scheduling.Departments.Command.RenameDepartment
 {
     public sealed class RenameDepartmentCommandHandler
-        : ICommandHandler<RenameDepartmentCommand>
+       : ICommandHandler<RenameDepartmentCommand>
     {
         private readonly IDepartmentRepository _departments;
 
@@ -37,22 +37,24 @@ namespace HospitalSystem.Application.Modules.Scheduling.Departments.Command.Rena
 
             var normalizedName = request.Name.Trim();
 
-            if (!string.Equals(
-                    department.Name,
-                    normalizedName,
-                    StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(
+                department.Name,
+                normalizedName,
+                StringComparison.OrdinalIgnoreCase))
             {
-                var exists = await _departments.ExistsByNameAsync(
-                    normalizedName,
-                    cancellationToken);
+                return Result.Success();
+            }
 
-                if (exists)
-                {
-                    return Result.Failure(
-                        Error.Conflict(
-                            "Department.AlreadyExists",
-                            "A department with this name already exists."));
-                }
+            var exists = await _departments.ExistsByNameAsync(
+                normalizedName,
+                cancellationToken);
+
+            if (exists)
+            {
+                return Result.Failure(
+                    Error.Conflict(
+                        "Department.AlreadyExists",
+                        "A department with this name already exists."));
             }
 
             department.Rename(normalizedName);

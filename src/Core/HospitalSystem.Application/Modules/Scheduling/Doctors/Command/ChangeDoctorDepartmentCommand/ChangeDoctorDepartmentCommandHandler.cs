@@ -9,8 +9,7 @@ using System.Text;
 
 namespace HospitalSystem.Application.Modules.Scheduling.Doctors.Command.ChangeDoctorDepartmentCommand
 {
-    public sealed class ChangeDoctorDepartmentCommandHandler
-        : ICommandHandler<ChangeDoctorDepartmentCommand>
+    public sealed class ChangeDoctorDepartmentCommandHandler: ICommandHandler<ChangeDoctorDepartmentCommand>
     {
         private readonly IDoctorRepository _doctors;
         private readonly IDepartmentRepository _departments;
@@ -35,11 +34,16 @@ namespace HospitalSystem.Application.Modules.Scheduling.Doctors.Command.ChangeDo
             {
                 return Result.Failure(
                     Error.NotFound(
-                        "Doctor.NotFound","Doctor was not found."));
+                        "Doctor.NotFound",
+                        "Doctor was not found."));
             }
 
-            var departmentId =
-                new DepartmentId(request.DepartmentId);
+            var departmentId = new DepartmentId(request.DepartmentId);
+
+            if (doctor.DepartmentId == departmentId)
+            {
+                return Result.Success();
+            }
 
             var department = await _departments.GetByIdAsync(
                 departmentId,
@@ -49,13 +53,14 @@ namespace HospitalSystem.Application.Modules.Scheduling.Doctors.Command.ChangeDo
             {
                 return Result.Failure(
                     Error.NotFound(
-                        "Department.NotFound","Department was not found."));
+                        "Department.NotFound",
+                        "Department was not found."));
             }
 
             doctor.ChangeDepartment(departmentId);
 
             return Result.Success();
         }
-    }
 
+    }
 }

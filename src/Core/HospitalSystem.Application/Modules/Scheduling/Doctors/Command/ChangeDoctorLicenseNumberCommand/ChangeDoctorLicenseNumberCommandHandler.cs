@@ -8,8 +8,7 @@ using System.Text;
 
 namespace HospitalSystem.Application.Modules.Scheduling.Doctors.Command.ChangeDoctorLicenseNumberCommand
 {
-    public sealed class ChangeDoctorLicenseNumberCommandHandler
-        : ICommandHandler<ChangeDoctorLicenseNumberCommand>
+    public sealed class ChangeDoctorLicenseNumberCommandHandler: ICommandHandler<ChangeDoctorLicenseNumberCommand>
     {
         private readonly IDoctorRepository _doctors;
 
@@ -20,33 +19,49 @@ namespace HospitalSystem.Application.Modules.Scheduling.Doctors.Command.ChangeDo
         }
 
         public async Task<Result> Handle(
-            ChangeDoctorLicenseNumberCommand request,CancellationToken cancellationToken)
+            ChangeDoctorLicenseNumberCommand request,
+            CancellationToken cancellationToken)
         {
             var doctor = await _doctors.GetByIdAsync(
-                new DoctorId(request.DoctorId),cancellationToken);
+                new DoctorId(request.DoctorId),
+                cancellationToken);
 
             if (doctor is null)
             {
                 return Result.Failure(
                     Error.NotFound(
-                        "Doctor.NotFound","Doctor was not found."));
+                        "Doctor.NotFound",
+                        "Doctor was not found."));
+            }
+
+            var normalizedLicenseNumber =
+                request.LicenseNumber.Trim();
+
+            if (string.Equals(
+                doctor.LicenseNumber,
+                normalizedLicenseNumber,
+                StringComparison.OrdinalIgnoreCase))
+            {
+                return Result.Success();
             }
 
             var exists = await _doctors.ExistsByLicenseNumberAsync(
-                request.LicenseNumber,
+                normalizedLicenseNumber,
                 cancellationToken);
 
-            if (exists && !string.Equals(doctor.LicenseNumber,request.LicenseNumber.Trim(),
-                    StringComparison.OrdinalIgnoreCase))
+            if (exists)
             {
-                return Result.Failure(Error.Conflict("Doctor.LicenseAlreadyExists",
+                return Result.Failure(
+                    Error.Conflict(
+                        "Doctor.LicenseAlreadyExists",
                         "A doctor with this license number already exists."));
             }
 
-            doctor.ChangeLicenseNumber(request.LicenseNumber);
+            doctor.ChangeLicenseNumber(
+                normalizedLicenseNumber);
 
             return Result.Success();
         }
-    }
 
+    }
 }

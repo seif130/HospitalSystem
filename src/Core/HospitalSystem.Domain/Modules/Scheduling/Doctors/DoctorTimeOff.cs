@@ -33,9 +33,16 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Doctors
 
         public static DoctorTimeOff Create(
             DoctorId doctorId,
-            DateRange period, string? reason = null)
+            DateRange period,
+            string? reason = null)
         {
-            return new DoctorTimeOff( DoctorTimeOffId.New(), doctorId, period, reason);
+            ArgumentNullException.ThrowIfNull(period);
+
+            return new DoctorTimeOff(
+                DoctorTimeOffId.New(),
+                doctorId,
+                period,
+                reason);
         }
 
         public void UpdateReason(string? reason)
@@ -45,7 +52,9 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Doctors
 
         private static string? NormalizeOptional(string? value)
         {
-            return string.IsNullOrWhiteSpace(value) ? null: value.Trim();
+            return string.IsNullOrWhiteSpace(value)
+                ? null
+                : value.Trim();
         }
     }
 

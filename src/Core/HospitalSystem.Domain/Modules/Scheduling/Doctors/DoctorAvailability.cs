@@ -11,6 +11,7 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Doctors
     public sealed class DoctorAvailability: BaseEntity<DoctorAvailabilityId>
     {
         public DoctorId DoctorId { get; private set; } = null!;
+
         public DateRange Slot { get; private set; } = null!;
 
         private DoctorAvailability()
@@ -18,16 +19,26 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Doctors
         }
 
         private DoctorAvailability(
-            DoctorAvailabilityId id, DoctorId doctorId, DateRange slot): base(id)
+            DoctorAvailabilityId id,
+            DoctorId doctorId,
+            DateRange slot)
+            : base(id)
         {
             DoctorId = doctorId;
             Slot = slot;
         }
 
-        public static DoctorAvailability Create(DoctorId doctorId,DateRange slot)
+        public static DoctorAvailability Create(
+            DoctorId doctorId,
+            DateRange slot)
         {
-            return new DoctorAvailability( DoctorAvailabilityId.New(), doctorId, slot);
-        }
-    }
+            ArgumentNullException.ThrowIfNull(slot);
 
+            return new DoctorAvailability(
+                DoctorAvailabilityId.New(),
+                doctorId,
+                slot);
+        }
+
+    }
 }

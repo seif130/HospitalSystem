@@ -1,5 +1,4 @@
-﻿using HospitalSystem.Application.Shared.Abstractions;
-using HospitalSystem.Application.Shared.Common;
+﻿using HospitalSystem.Application.Shared.Common;
 using HospitalSystem.Application.Shared.Messaging;
 using HospitalSystem.Domain.Modules.Scheduling.Departments;
 using HospitalSystem.Domain.Modules.Scheduling.Departments.Contract;
@@ -9,8 +8,7 @@ using System.Text;
 
 namespace HospitalSystem.Application.Modules.Scheduling.Departments.Command.CreateDepartment
 {
-    public sealed class CreateDepartmentCommandHandler
-      : ICommandHandler<CreateDepartmentCommand, Guid>
+    public sealed class CreateDepartmentCommandHandler: ICommandHandler<CreateDepartmentCommand, Guid>
     {
         private readonly IDepartmentRepository _departments;
 
@@ -20,12 +18,12 @@ namespace HospitalSystem.Application.Modules.Scheduling.Departments.Command.Crea
             _departments = departments;
         }
 
-        public async Task<Result<Guid>> Handle(
-            CreateDepartmentCommand request,
-            CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(CreateDepartmentCommand request,CancellationToken cancellationToken)
         {
+            var normalizedName = request.Name.Trim();
+
             var exists = await _departments.ExistsByNameAsync(
-                request.Name,
+                normalizedName,
                 cancellationToken);
 
             if (exists)
@@ -36,11 +34,16 @@ namespace HospitalSystem.Application.Modules.Scheduling.Departments.Command.Crea
                         "A department with this name already exists."));
             }
 
-            var department = Department.Create(request.Name);
+            var department = Department.Create(
+                normalizedName,
+                request.Description);
 
-            await _departments.AddAsync(department, cancellationToken);
+            await _departments.AddAsync(
+                department,
+                cancellationToken);
 
-            return Result.Success(department.Id.Value);
+            return Result.Success(
+                department.Id.Value);
         }
     }
 

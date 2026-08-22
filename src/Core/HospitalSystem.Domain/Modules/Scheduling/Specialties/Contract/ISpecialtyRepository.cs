@@ -7,8 +7,13 @@ using System.Text;
 namespace HospitalSystem.Domain.Modules.Scheduling.Specialties.Contract
 {
 
-    public interface ISpecialtyRepository : IRepository<Specialty, SpecialtyId>
+    public interface ISpecialtyRepository: IRepository<Specialty, SpecialtyId>
     {
-        Task<bool> ExistsByNameAsync(string name, CancellationToken ct = default);
+        Task<bool> ExistsByNameAsync(
+            string name,
+            CancellationToken ct = default);
+
+        Task<IReadOnlyList<Specialty>> GetAllAsync(
+            CancellationToken ct = default);
     }
 }
