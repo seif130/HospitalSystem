@@ -1,4 +1,6 @@
-﻿using HospitalSystem.Domain.Primitives;
+﻿using HospitalSystem.Domain.Common;
+using HospitalSystem.Domain.Identifiers;
+using HospitalSystem.Domain.Primitives;
 using HospitalSystem.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -6,17 +8,26 @@ using System.Text;
 
 namespace HospitalSystem.Domain.Modules.Scheduling.Doctors
 {
-    public sealed class DoctorAvailability
+    public sealed class DoctorAvailability: BaseEntity<DoctorAvailabilityId>
     {
-        public DateRange Slot { get; }
-        public bool IsBooked { get; private set; }
+        public DoctorId DoctorId { get; private set; } = null!;
+        public DateRange Slot { get; private set; } = null!;
 
-        internal DoctorAvailability(DateRange slot) => Slot = slot;
+        private DoctorAvailability()
+        {
+        }
 
-        internal void MarkBooked() => IsBooked = IsBooked
-            ? throw new DomainException("This availability slot is already booked.")
-            : true;
+        private DoctorAvailability(
+            DoctorAvailabilityId id, DoctorId doctorId, DateRange slot): base(id)
+        {
+            DoctorId = doctorId;
+            Slot = slot;
+        }
 
-        internal void Release() => IsBooked = false;
+        public static DoctorAvailability Create(DoctorId doctorId,DateRange slot)
+        {
+            return new DoctorAvailability( DoctorAvailabilityId.New(), doctorId, slot);
+        }
     }
+
 }

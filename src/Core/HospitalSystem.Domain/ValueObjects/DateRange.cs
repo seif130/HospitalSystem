@@ -22,20 +22,20 @@ namespace HospitalSystem.Domain.ValueObjects
             DateTime start,
             DateTime? end = null)
         {
-            if (end.HasValue && end.Value < start)
-                throw new DomainException("End date cannot be before the start date.");
+            if (end.HasValue && end.Value <= start)
+                throw new DomainException("End date must be greater than the start date.");
 
             return new DateRange(start, end);
         }
 
-        public bool IsOpen
-            => End is null;
+        public bool IsOpen => End is null;
 
         public bool Overlaps(DateRange other)
         {
             ArgumentNullException.ThrowIfNull(other);
 
-            return Start < (other.End ?? DateTime.MaxValue) && other.Start < (End ?? DateTime.MaxValue);
+            return Start < (other.End ?? DateTime.MaxValue)
+                && other.Start < (End ?? DateTime.MaxValue);
         }
 
         protected override IEnumerable<object?> GetEqualityComponents()
@@ -43,6 +43,12 @@ namespace HospitalSystem.Domain.ValueObjects
             yield return Start;
             yield return End;
         }
+
+        public override string ToString()
+        {
+            return End is null ? $"{Start:u} - Open" : $"{Start:u} - {End:u}";
+        }
     }
+
 
 }

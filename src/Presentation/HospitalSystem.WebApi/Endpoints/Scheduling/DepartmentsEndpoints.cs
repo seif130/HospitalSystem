@@ -1,4 +1,4 @@
-﻿using HospitalSystem.Application.Modules.Scheduling.Departments.CreateDepartment;
+﻿using HospitalSystem.Application.Modules.Scheduling.Departments.Command.CreateDepartment;
 using HospitalSystem.Application.Modules.Scheduling.Departments.GetDepartments;
 using MediatR;
 

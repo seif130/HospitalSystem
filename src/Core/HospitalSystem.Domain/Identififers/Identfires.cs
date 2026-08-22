@@ -32,9 +32,33 @@ public sealed record SurgeryId(Guid Value) : TypedId(Value)
 }
 
 // Scheduling
+
+
+#region Scheduling
+
 public sealed record DoctorId(Guid Value) : TypedId(Value)
 {
     public static DoctorId New() => new(Guid.NewGuid());
+}
+
+public sealed record DoctorAvailabilityId(Guid Value) : TypedId(Value)
+{
+    public static DoctorAvailabilityId New() => new(Guid.NewGuid());
+}
+
+public sealed record DoctorScheduleId(Guid Value): TypedId(Value)
+{
+    public static DoctorScheduleId New() => new(Guid.NewGuid());
+}
+
+public sealed record DoctorTimeOffId(Guid Value): TypedId(Value)
+{
+    public static DoctorTimeOffId New() => new(Guid.NewGuid());
+}
+
+public sealed record SpecialtyId(Guid Value) : TypedId(Value)
+{
+    public static SpecialtyId New() => new(Guid.NewGuid());
 }
 
 public sealed record DepartmentId(Guid Value) : TypedId(Value)
@@ -51,6 +75,13 @@ public sealed record ClinicRoomId(Guid Value) : TypedId(Value)
 {
     public static ClinicRoomId New() => new(Guid.NewGuid());
 }
+
+public sealed record WaitlistId(Guid Value) : TypedId(Value)
+{
+    public static WaitlistId New() => new(Guid.NewGuid());
+}
+
+#endregion
 
 // Pharmacy & Inventory
 public sealed record PrescriptionId(Guid Value) : TypedId(Value)

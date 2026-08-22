@@ -1,11 +1,11 @@
 ﻿using HospitalSystem.Application.Modules.Scheduling.Appointments.CancelAppointment;
 using HospitalSystem.Application.Modules.Scheduling.Appointments.CheckInAppointment;
+using HospitalSystem.Application.Modules.Scheduling.Appointments.Command.RescheduleAppointment;
+using HospitalSystem.Application.Modules.Scheduling.Appointments.Command.ScheduleAppointment;
 using HospitalSystem.Application.Modules.Scheduling.Appointments.CompleteAppointment;
 using HospitalSystem.Application.Modules.Scheduling.Appointments.GetAppointmentById;
 using HospitalSystem.Application.Modules.Scheduling.Appointments.GetDoctorSchedule;
 using HospitalSystem.Application.Modules.Scheduling.Appointments.GetPatientAppointments;
-using HospitalSystem.Application.Modules.Scheduling.Appointments.RescheduleAppointment;
-using HospitalSystem.Application.Modules.Scheduling.Appointments.ScheduleAppointment;
 using HospitalSystem.Application.Shared.Common;
 using HospitalSystem.WebApi;
 using MediatR;

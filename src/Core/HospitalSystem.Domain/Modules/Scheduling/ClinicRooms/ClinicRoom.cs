@@ -1,4 +1,4 @@
-﻿using HospitalSystem.Domain.Identififers;
+﻿using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Primitives;
 using HospitalSystem.Domain.ValueObjects;
 using System;
@@ -13,32 +13,48 @@ namespace HospitalSystem.Domain.Modules.Scheduling.ClinicRooms
         public DepartmentId DepartmentId { get; private set; } = null!;
         public int Capacity { get; private set; }
 
-        private readonly List<DateRange> _bookings = new();
-        public IReadOnlyCollection<DateRange> Bookings => _bookings.AsReadOnly();
+        private ClinicRoom()
+        {
+        }
 
-        private ClinicRoom() { }
-
-        private ClinicRoom(ClinicRoomId id, string roomNumber, DepartmentId departmentId, int capacity) : base(id)
+        private ClinicRoom(ClinicRoomId id,string roomNumber,DepartmentId departmentId,int capacity) : base(id)
         {
             RoomNumber = roomNumber;
             DepartmentId = departmentId;
             Capacity = capacity;
         }
 
-        public static ClinicRoom Create(string roomNumber, DepartmentId departmentId, int capacity)
+        public static ClinicRoom Create(string roomNumber, DepartmentId departmentId,int capacity)
         {
-            if (string.IsNullOrWhiteSpace(roomNumber)) throw new DomainException("Room number is required.");
-            if (capacity <= 0) throw new DomainException("Capacity must be greater than zero.");
-            return new ClinicRoom(ClinicRoomId.New(), roomNumber.Trim(), departmentId, capacity);
+            if (string.IsNullOrWhiteSpace(roomNumber))
+                throw new DomainException("Room number is required.");
+
+            if (capacity <= 0)
+                throw new DomainException("Capacity must be greater than zero.");
+
+            return new ClinicRoom(ClinicRoomId.New(),roomNumber.Trim(), departmentId,capacity);
         }
 
-        public void Book(DateRange slot)
+        public void Rename(string roomNumber)
         {
-            if (_bookings.Any(b => b.Overlaps(slot)))
-                throw new DomainException($"Room {RoomNumber} is already booked for the requested time.");
-            _bookings.Add(slot);
+            if (string.IsNullOrWhiteSpace(roomNumber))
+                throw new DomainException("Room number is required.");
+
+            RoomNumber = roomNumber.Trim();
         }
 
-        public void ReleaseBooking(DateRange slot) => _bookings.Remove(slot);
+        public void ChangeCapacity(int capacity)
+        {
+            if (capacity <= 0)
+                throw new DomainException("Capacity must be greater than zero.");
+
+            Capacity = capacity;
+        }
+
+        public void ChangeDepartment(DepartmentId departmentId)
+        {
+            DepartmentId = departmentId;
+        }
     }
+
 }
