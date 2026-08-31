@@ -1,5 +1,5 @@
-﻿using HospitalSystem.Domain.Common;
-using HospitalSystem.Domain.Identifiers;
+﻿using HospitalSystem.Domain.Identifiers;
+using HospitalSystem.Domain.Primitives;
 using HospitalSystem.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Text;
 
 namespace HospitalSystem.Domain.Modules.Scheduling.Doctors
 {
-    public sealed class DoctorTimeOff: BaseEntity<DoctorTimeOffId>
+    public sealed class DoctorTimeOff: AggregateRoot<DoctorTimeOffId>
     {
         public DoctorId DoctorId { get; private set; } = null!;
 
@@ -19,12 +19,9 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Doctors
         {
         }
 
-        private DoctorTimeOff(
-            DoctorTimeOffId id,
-            DoctorId doctorId,
-            DateRange period,
-            string? reason)
-            : base(id)
+        private DoctorTimeOff(DoctorTimeOffId id,
+            DoctorId doctorId,DateRange period,
+            string? reason): base(id)
         {
             DoctorId = doctorId;
             Period = period;
@@ -50,12 +47,16 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Doctors
             Reason = NormalizeOptional(reason);
         }
 
+        public void UpdatePeriod(DateRange period)
+        {
+            ArgumentNullException.ThrowIfNull(period);
+
+            Period = period;
+        }
+
         private static string? NormalizeOptional(string? value)
         {
-            return string.IsNullOrWhiteSpace(value)
-                ? null
-                : value.Trim();
+            return string.IsNullOrWhiteSpace(value)? null: value.Trim();
         }
     }
-
 }

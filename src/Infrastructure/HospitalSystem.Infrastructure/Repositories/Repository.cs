@@ -8,7 +8,7 @@ using System.Text;
 
 namespace HospitalSystem.Infrastructure.Repositories
 {
-    public abstract class Repository<TEntity, TId>: IRepository<TEntity, TId> where TEntity : AggregateRoot<TId>
+    public abstract class Repository<TEntity, TId> : IRepository<TEntity, TId> where TEntity : AggregateRoot<TId>
     {
         protected readonly SchedulingDbContext Context;
         protected readonly DbSet<TEntity> DbSet;
@@ -19,9 +19,9 @@ namespace HospitalSystem.Infrastructure.Repositories
             DbSet = context.Set<TEntity>();
         }
 
-        public virtual async Task<TEntity?> GetByIdAsync(TId id,CancellationToken ct = default)
+        public virtual async Task<TEntity?> GetByIdAsync(TId id, CancellationToken ct = default)
         {
-            return await DbSet.FindAsync( new object?[] { id }, ct);
+            return await DbSet.FindAsync(new object?[] { id }, ct);
         }
 
         public virtual async Task AddAsync(TEntity entity,CancellationToken ct = default)
@@ -39,5 +39,4 @@ namespace HospitalSystem.Infrastructure.Repositories
             DbSet.Remove(entity);
         }
     }
-
 }

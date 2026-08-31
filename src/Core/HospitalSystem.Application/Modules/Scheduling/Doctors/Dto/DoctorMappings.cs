@@ -14,7 +14,7 @@ namespace HospitalSystem.Application.Modules.Scheduling.Doctors.Dto
                 doctor.Name.FirstName,
                 doctor.Name.LastName,
                 doctor.LicenseNumber,
-                doctor.Specialty,
+                doctor.SpecialtyId.Value,
                 doctor.DepartmentId.Value);
         }
     }

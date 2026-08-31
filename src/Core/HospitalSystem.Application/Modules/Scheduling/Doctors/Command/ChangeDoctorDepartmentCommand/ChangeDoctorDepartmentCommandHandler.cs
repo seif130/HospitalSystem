@@ -3,6 +3,7 @@ using HospitalSystem.Application.Shared.Messaging;
 using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Modules.Scheduling.Departments.Contract;
 using HospitalSystem.Domain.Modules.Scheduling.Doctors.Contract;
+using HospitalSystem.Domain.Reprository;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,13 +14,16 @@ namespace HospitalSystem.Application.Modules.Scheduling.Doctors.Command.ChangeDo
     {
         private readonly IDoctorRepository _doctors;
         private readonly IDepartmentRepository _departments;
+        private readonly IUnitOfWork _unitOfWork;
 
         public ChangeDoctorDepartmentCommandHandler(
             IDoctorRepository doctors,
-            IDepartmentRepository departments)
+            IDepartmentRepository departments,
+            IUnitOfWork unitOfWork)
         {
             _doctors = doctors;
             _departments = departments;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result> Handle(
@@ -33,8 +37,7 @@ namespace HospitalSystem.Application.Modules.Scheduling.Doctors.Command.ChangeDo
             if (doctor is null)
             {
                 return Result.Failure(
-                    Error.NotFound(
-                        "Doctor.NotFound",
+                    Error.NotFound("Doctor.NotFound",
                         "Doctor was not found."));
             }
 
@@ -59,8 +62,10 @@ namespace HospitalSystem.Application.Modules.Scheduling.Doctors.Command.ChangeDo
 
             doctor.ChangeDepartment(departmentId);
 
+            await _unitOfWork.SaveChangesAsync(
+                cancellationToken);
+
             return Result.Success();
         }
-
     }
 }

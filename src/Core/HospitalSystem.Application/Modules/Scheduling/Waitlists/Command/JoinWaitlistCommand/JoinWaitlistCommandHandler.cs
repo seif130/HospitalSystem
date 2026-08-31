@@ -1,9 +1,11 @@
-﻿using HospitalSystem.Application.Shared.Common;
+﻿using HospitalSystem.Application.Shared.Abstractions;
+using HospitalSystem.Application.Shared.Common;
 using HospitalSystem.Application.Shared.Messaging;
 using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Modules.Scheduling.Doctors.Contract;
 using HospitalSystem.Domain.Modules.Scheduling.Waitlists;
 using HospitalSystem.Domain.Modules.Scheduling.Waitlists.Contract;
+using HospitalSystem.Domain.Reprository;
 using HospitalSystem.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -11,42 +13,39 @@ using System.Text;
 
 namespace HospitalSystem.Application.Modules.Scheduling.Waitlists.Command.JoinWaitlistCommand
 {
-    public sealed class JoinWaitlistCommandHandler
-     : ICommandHandler<JoinWaitlistCommand, Guid>
+    public sealed class JoinWaitlistCommandHandler: ICommandHandler<JoinWaitlistCommand, Guid>
     {
         private readonly IWaitlistRepository _waitlists;
         private readonly IDoctorRepository _doctors;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
-        public JoinWaitlistCommandHandler(
-            IWaitlistRepository waitlists,IDoctorRepository doctors)
+        public JoinWaitlistCommandHandler(IWaitlistRepository waitlists,
+            IDoctorRepository doctors,IUnitOfWork unitOfWork,IDateTimeProvider dateTimeProvider)
         {
             _waitlists = waitlists;
             _doctors = doctors;
+            _unitOfWork = unitOfWork;
+            _dateTimeProvider = dateTimeProvider;
         }
 
-        public async Task<Result<Guid>> Handle(
-            JoinWaitlistCommand request,
-            CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(JoinWaitlistCommand request,
+            CancellationToken cancellationToken = default)
         {
             var patientId = new PatientId(request.PatientId);
             var doctorId = new DoctorId(request.DoctorId);
 
             var doctor = await _doctors.GetByIdAsync(
-                doctorId,
-                cancellationToken);
+                doctorId,cancellationToken = default);
 
             if (doctor is null)
             {
                 return Result.Failure<Guid>(
-                    Error.NotFound(
-                        "Doctor.NotFound",
-                        "Doctor was not found."));
+                    Error.NotFound("Doctor.NotFound","Doctor was not found."));
             }
 
             var hasActiveEntry =
-                await _waitlists.HasActiveEntryAsync(
-                    patientId,
-                    doctorId,
+                await _waitlists.HasActiveEntryAsync(patientId,doctorId,
                     cancellationToken);
 
             if (hasActiveEntry)
@@ -61,13 +60,15 @@ namespace HospitalSystem.Application.Modules.Scheduling.Waitlists.Command.JoinWa
                 patientId,
                 doctorId,
                 request.PreferredFromUtc,
-                request.PreferredToUtc);
+                request.PreferredToUtc,
+                _dateTimeProvider.UtcNow);
 
-            await _waitlists.AddAsync(waitlist, cancellationToken);
+            await _waitlists.AddAsync(waitlist,cancellationToken);
 
-            return waitlist.Id.Value;
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Result.Success(waitlist.Id.Value);
         }
     }
-
 
 }

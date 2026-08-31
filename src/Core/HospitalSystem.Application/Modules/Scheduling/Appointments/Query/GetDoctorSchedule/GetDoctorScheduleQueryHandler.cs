@@ -11,9 +11,7 @@ using System.Text;
 namespace HospitalSystem.Application.Modules.Scheduling.Appointments.Query.GetDoctorSchedule
 {
     public sealed class GetDoctorAppointmentsQueryHandler
-     : IQueryHandler<
-         GetDoctorAppointmentsQuery,
-         IReadOnlyList<AppointmentDto>>
+     : IQueryHandler<GetDoctorAppointmentsQuery,IReadOnlyList<AppointmentDto>>
     {
         private readonly IAppointmentRepository _appointments;
 

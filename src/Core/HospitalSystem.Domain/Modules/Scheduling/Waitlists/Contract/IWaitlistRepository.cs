@@ -9,9 +9,11 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Waitlists.Contract
 {
     public interface IWaitlistRepository: IRepository<Waitlist, WaitlistId>
     {
-        Task<IReadOnlyList<Waitlist>> GetWaitingByDoctorAsync(DoctorId doctorId, DateRange period, CancellationToken ct = default);
+        Task<IReadOnlyList<Waitlist>> GetWaitingByDoctorAsync(DoctorId doctorId,DateRange period,
+            CancellationToken ct = default);
 
-        Task<bool> HasActiveEntryAsync(PatientId patientId, DoctorId doctorId,CancellationToken ct = default);
+        Task<bool> HasActiveEntryAsync(PatientId patientId,DoctorId doctorId,
+            CancellationToken ct = default);
     }
 
 }

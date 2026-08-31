@@ -27,20 +27,26 @@ namespace HospitalSystem.Application.Modules.Scheduling.Appointments.Command.Mar
         }
 
         public async Task<Result> Handle(
-            MarkAppointmentAsNoShowCommand request,CancellationToken ct)
+            MarkAppointmentAsNoShowCommand request,
+            CancellationToken cancellationToken)
         {
-            var appointment = await _appointmentRepository
-                .GetByIdAsync(new AppointmentId(request.AppointmentId),ct);
+            var appointment = await _appointmentRepository.GetByIdAsync(
+                new AppointmentId(request.AppointmentId),
+                cancellationToken);
 
             if (appointment is null)
             {
                 return Result.Failure(
-                    Error.NotFound("Appointment.NotFound","Appointment was not found."));
+                    Error.NotFound(
+                        "Appointment.NotFound",
+                        "Appointment was not found."));
             }
 
-            appointment.MarkAsNoShow(_dateTimeProvider.UtcNow);
+            appointment.MarkAsNoShow(
+                _dateTimeProvider.UtcNow);
 
-            await _unitOfWork.SaveChangesAsync(ct);
+            await _unitOfWork.SaveChangesAsync(
+                cancellationToken);
 
             return Result.Success();
         }

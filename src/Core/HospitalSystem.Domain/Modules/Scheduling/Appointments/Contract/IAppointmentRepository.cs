@@ -13,30 +13,24 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Appointments.Contract
             DoctorId doctorId,DateRange period,CancellationToken ct = default);
 
         Task<IReadOnlyList<Appointment>> GetByPatientAsync(
-            PatientId patientId,DateRange period, CancellationToken ct = default);
+            PatientId patientId, DateRange period,CancellationToken ct = default);
 
         Task<IReadOnlyList<Appointment>> GetByClinicRoomAsync(
-            ClinicRoomId clinicRoomId,DateRange period,CancellationToken ct = default);
+            ClinicRoomId clinicRoomId, DateRange period,
+            CancellationToken ct = default);
 
         Task<bool> HasDoctorConflictAsync(
-            DoctorId doctorId,DateRange period,CancellationToken ct = default);
+            DoctorId doctorId,DateRange period,
+            AppointmentId? excludingAppointmentId = null,
+            CancellationToken ct = default);
 
-        Task<bool> HasPatientConflictAsync(
-            PatientId patientId,DateRange period,CancellationToken ct = default);
-
-        Task<bool> HasClinicRoomConflictAsync(
-            ClinicRoomId clinicRoomId,DateRange period,CancellationToken ct = default);
-
-        Task<bool> HasDoctorConflictAsync(DoctorId doctorId,DateRange period,
-            AppointmentId excludingAppointmentId, CancellationToken ct = default);
-
-        Task<bool> HasPatientConflictAsync(PatientId patientId,DateRange period,
-            AppointmentId excludingAppointmentId,CancellationToken ct = default);
+        Task<bool> HasPatientConflictAsync(PatientId patientId, DateRange period,
+            AppointmentId? excludingAppointmentId = null,
+            CancellationToken ct = default);
 
         Task<bool> HasClinicRoomConflictAsync(ClinicRoomId clinicRoomId,DateRange period,
-            AppointmentId excludingAppointmentId,CancellationToken ct = default);
+            AppointmentId? excludingAppointmentId = null,
+            CancellationToken ct = default);
     }
-
-
 
 }

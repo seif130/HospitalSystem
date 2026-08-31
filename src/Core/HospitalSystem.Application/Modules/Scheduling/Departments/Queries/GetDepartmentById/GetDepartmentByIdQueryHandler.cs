@@ -9,34 +9,27 @@ using System.Text;
 
 namespace HospitalSystem.Application.Modules.Scheduling.Departments.Queries.GetDepartmentById
 {
-    public sealed class GetDepartmentByIdQueryHandler
+   public sealed class GetDepartmentByIdQueryHandler
         : IQueryHandler<GetDepartmentByIdQuery, DepartmentDto>
     {
         private readonly IDepartmentRepository _departments;
 
-        public GetDepartmentByIdQueryHandler(
-            IDepartmentRepository departments)
+        public GetDepartmentByIdQueryHandler(IDepartmentRepository departments)
         {
             _departments = departments;
         }
 
-        public async Task<Result<DepartmentDto>> Handle(
-            GetDepartmentByIdQuery request,
-            CancellationToken cancellationToken)
+        public async Task<Result<DepartmentDto>> Handle(GetDepartmentByIdQuery request,CancellationToken cancellationToken = default)
         {
-            var department = await _departments.GetByIdAsync(
-                new DepartmentId(request.DepartmentId),
-                cancellationToken);
+            var department = await _departments.GetByIdAsync(new DepartmentId(request.DepartmentId),cancellationToken);
 
             if (department is null)
             {
                 return Result.Failure<DepartmentDto>(
-                    Error.NotFound(
-                        "Department.NotFound",
-                        "Department was not found."));
+                    Error.NotFound("Department.NotFound","Department was not found."));
             }
 
-            return department.ToDto();
+            return Result.Success(department.ToDto());
         }
     }
 

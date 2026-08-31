@@ -1,7 +1,9 @@
-﻿using HospitalSystem.Application.Shared.Common;
+﻿using HospitalSystem.Application.Shared.Abstractions;
+using HospitalSystem.Application.Shared.Common;
 using HospitalSystem.Application.Shared.Messaging;
 using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Modules.Scheduling.Appointments.Contract;
+using HospitalSystem.Domain.Reprository;
 using HospitalSystem.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -9,78 +11,68 @@ using System.Text;
 
 namespace HospitalSystem.Application.Modules.Scheduling.Appointments.Command.RescheduleAppointment
 {
-    public sealed class RescheduleAppointmentCommandHandler
-       : ICommandHandler<RescheduleAppointmentCommand>
+    public sealed class RescheduleAppointmentCommandHandler: ICommandHandler<RescheduleAppointmentCommand>
     {
         private readonly IAppointmentRepository _appointments;
+        private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IUnitOfWork _unitOfWork;
 
         public RescheduleAppointmentCommandHandler(
-            IAppointmentRepository appointments)
+            IAppointmentRepository appointments,
+            IDateTimeProvider dateTimeProvider,
+            IUnitOfWork unitOfWork)
         {
             _appointments = appointments;
+            _dateTimeProvider = dateTimeProvider;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result> Handle(
-            RescheduleAppointmentCommand request,
-            CancellationToken cancellationToken)
+        public async Task<Result> Handle(RescheduleAppointmentCommand request,CancellationToken cancellationToken = default)
         {
             var appointmentId =
                 new AppointmentId(request.AppointmentId);
 
             var appointment =
-                await _appointments.GetByIdAsync(
-                    appointmentId,
-                    cancellationToken);
+                await _appointments.GetByIdAsync(appointmentId,cancellationToken);
 
             if (appointment is null)
             {
                 return Result.Failure(
-                    Error.NotFound(
-                        "Appointment.NotFound",
+                    Error.NotFound("Appointment.NotFound",
                         "Appointment was not found."));
             }
 
-            var newPeriod = DateRange.Create(
-                request.StartUtc,
-                request.EndUtc);
+            var newPeriod = DateRange.Create(request.StartUtc,request.EndUtc);
 
-            if (await _appointments.HasDoctorConflictAsync(
-                    appointment.DoctorId,
-                    newPeriod,
-                    appointment.Id,
-                    cancellationToken))
+            if (await _appointments.HasDoctorConflictAsync(appointment.DoctorId,
+                    newPeriod,appointment.Id,cancellationToken))
             {
                 return Result.Failure(
-                    Error.Conflict(
-                        "Appointment.DoctorConflict",
+                    Error.Conflict("Appointment.DoctorConflict",
                         "Doctor is already booked during this period."));
             }
 
-            if (await _appointments.HasPatientConflictAsync(
-                    appointment.PatientId,
-                    newPeriod,
-                    appointment.Id,
+            if (await _appointments.HasPatientConflictAsync(appointment.PatientId,
+                    newPeriod,appointment.Id,
                     cancellationToken))
             {
                 return Result.Failure(
-                    Error.Conflict(
-                        "Appointment.PatientConflict",
+                    Error.Conflict("Appointment.PatientConflict",
                         "Patient already has an appointment during this period."));
             }
 
             if (await _appointments.HasClinicRoomConflictAsync(
                     appointment.ClinicRoomId,
-                    newPeriod,
-                    appointment.Id,
-                    cancellationToken))
+                    newPeriod,appointment.Id,cancellationToken))
             {
                 return Result.Failure(
-                    Error.Conflict(
-                        "Appointment.ClinicRoomConflict",
+                    Error.Conflict("Appointment.ClinicRoomConflict",
                         "Clinic room is already booked during this period."));
             }
 
-            appointment.Reschedule(newPeriod);
+            appointment.Reschedule(newPeriod, _dateTimeProvider.UtcNow);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
         }

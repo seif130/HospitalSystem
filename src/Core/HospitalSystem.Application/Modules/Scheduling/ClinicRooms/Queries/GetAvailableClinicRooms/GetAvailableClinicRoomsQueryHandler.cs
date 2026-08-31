@@ -11,9 +11,7 @@ using System.Text;
 namespace HospitalSystem.Application.Modules.Scheduling.ClinicRooms.Queries.GetAvailableClinicRooms
 {
     public sealed class GetAvailableClinicRoomsQueryHandler
-        : IQueryHandler<
-            GetAvailableClinicRoomsQuery,
-            IReadOnlyList<ClinicRoomDto>>
+      : IQueryHandler<GetAvailableClinicRoomsQuery,IReadOnlyList<ClinicRoomDto>>
     {
         private readonly IClinicRoomRepository _rooms;
 
@@ -24,8 +22,7 @@ namespace HospitalSystem.Application.Modules.Scheduling.ClinicRooms.Queries.GetA
         }
 
         public async Task<Result<IReadOnlyList<ClinicRoomDto>>> Handle(
-            GetAvailableClinicRoomsQuery request,
-            CancellationToken cancellationToken)
+            GetAvailableClinicRoomsQuery request,CancellationToken cancellationToken)
         {
             var period = DateRange.Create(
                 request.FromUtc,
@@ -36,9 +33,7 @@ namespace HospitalSystem.Application.Modules.Scheduling.ClinicRooms.Queries.GetA
                 period,
                 cancellationToken);
 
-            return rooms
-                .Select(x => x.ToDto())
-                .ToList();
+            return rooms.Select(x => x.ToDto()).ToList();
         }
     }
 

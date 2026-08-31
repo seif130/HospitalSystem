@@ -1,5 +1,4 @@
-﻿using HospitalSystem.Domain.Modules.Scheduling.Doctors.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,7 +9,7 @@ namespace HospitalSystem.Application.Modules.Scheduling.Doctors.Dto
         string FirstName,
         string LastName,
         string LicenseNumber,
-        MedicalSpecialty Specialty,
+        Guid SpecialtyId,
         Guid DepartmentId);
 
 }

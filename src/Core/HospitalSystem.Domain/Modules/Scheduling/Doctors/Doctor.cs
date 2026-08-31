@@ -1,5 +1,4 @@
 ﻿using HospitalSystem.Domain.Identifiers;
-using HospitalSystem.Domain.Modules.Scheduling.Doctors.Enums;
 using HospitalSystem.Domain.Primitives;
 using HospitalSystem.Domain.ValueObjects;
 using System;
@@ -12,7 +11,7 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Doctors
     {
         public PersonName Name { get; private set; } = null!;
 
-        public MedicalSpecialty Specialty { get; private set; }
+        public SpecialtyId SpecialtyId { get; private set; } = null!;
 
         public DepartmentId DepartmentId { get; private set; } = null!;
 
@@ -25,20 +24,20 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Doctors
         private Doctor(
             DoctorId id,
             PersonName name,
-            MedicalSpecialty specialty,
+            SpecialtyId specialtyId,
             DepartmentId departmentId,
             string licenseNumber)
             : base(id)
         {
             Name = name;
-            Specialty = specialty;
+            SpecialtyId = specialtyId;
             DepartmentId = departmentId;
             LicenseNumber = NormalizeLicenseNumber(licenseNumber);
         }
 
         public static Doctor Register(
             PersonName name,
-            MedicalSpecialty specialty,
+            SpecialtyId specialtyId,
             DepartmentId departmentId,
             string licenseNumber)
         {
@@ -53,7 +52,7 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Doctors
             return new Doctor(
                 DoctorId.New(),
                 name,
-                specialty,
+                specialtyId,
                 departmentId,
                 licenseNumber);
         }
@@ -65,9 +64,9 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Doctors
             Name = name;
         }
 
-        public void ChangeSpecialty(MedicalSpecialty specialty)
+        public void ChangeSpecialty(SpecialtyId specialtyId)
         {
-            Specialty = specialty;
+            SpecialtyId = specialtyId;
         }
 
         public void ChangeDepartment(DepartmentId departmentId)
@@ -90,6 +89,5 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Doctors
         {
             return value.Trim();
         }
-
     }
 }

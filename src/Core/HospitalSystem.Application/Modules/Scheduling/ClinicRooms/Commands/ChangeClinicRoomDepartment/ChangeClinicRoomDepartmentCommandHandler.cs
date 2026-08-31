@@ -3,6 +3,7 @@ using HospitalSystem.Application.Shared.Messaging;
 using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Modules.Scheduling.ClinicRooms.Contract;
 using HospitalSystem.Domain.Modules.Scheduling.Departments.Contract;
+using HospitalSystem.Domain.Reprository;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,12 +14,16 @@ namespace HospitalSystem.Application.Modules.Scheduling.ClinicRooms.Commands.Cha
     {
         private readonly IClinicRoomRepository _rooms;
         private readonly IDepartmentRepository _departments;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ChangeClinicRoomDepartmentCommandHandler(IClinicRoomRepository rooms,
-            IDepartmentRepository departments)
+        public ChangeClinicRoomDepartmentCommandHandler(
+            IClinicRoomRepository rooms,
+            IDepartmentRepository departments,
+            IUnitOfWork unitOfWork)
         {
             _rooms = rooms;
             _departments = departments;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result> Handle(
@@ -26,14 +31,12 @@ namespace HospitalSystem.Application.Modules.Scheduling.ClinicRooms.Commands.Cha
             CancellationToken cancellationToken)
         {
             var room = await _rooms.GetByIdAsync(
-                new ClinicRoomId(request.ClinicRoomId),
-                cancellationToken);
+                new ClinicRoomId(request.ClinicRoomId),cancellationToken);
 
             if (room is null)
             {
                 return Result.Failure(
-                    Error.NotFound(
-                        "ClinicRoom.NotFound",
+                    Error.NotFound("ClinicRoom.NotFound",
                         "Clinic room was not found."));
             }
 
@@ -47,8 +50,7 @@ namespace HospitalSystem.Application.Modules.Scheduling.ClinicRooms.Commands.Cha
             if (department is null)
             {
                 return Result.Failure(
-                    Error.NotFound(
-                        "Department.NotFound",
+                    Error.NotFound("Department.NotFound",
                         "Department was not found."));
             }
 
@@ -65,12 +67,13 @@ namespace HospitalSystem.Application.Modules.Scheduling.ClinicRooms.Commands.Cha
             if (exists)
             {
                 return Result.Failure(
-                    Error.Conflict(
-                        "ClinicRoom.AlreadyExists",
+                    Error.Conflict("ClinicRoom.AlreadyExists",
                         "A room with this number already exists in the target department."));
             }
 
             room.ChangeDepartment(departmentId);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
         }

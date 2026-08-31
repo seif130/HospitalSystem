@@ -9,14 +9,20 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Specialties
     public sealed class Specialty : AggregateRoot<SpecialtyId>
     {
         public string Name { get; private set; } = null!;
+
         public string? Description { get; private set; }
+
         public bool IsActive { get; private set; }
 
         private Specialty()
         {
         }
 
-        private Specialty( SpecialtyId id, string name, string? description): base(id)
+        private Specialty(
+            SpecialtyId id,
+            string name,
+            string? description)
+            : base(id)
         {
             Name = name;
             Description = NormalizeOptional(description);
@@ -28,18 +34,24 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Specialties
             string? description = null)
         {
             if (string.IsNullOrWhiteSpace(name))
-                throw new DomainException("Specialty name is required.");
+            {
+                throw new DomainException(
+                    "Specialty name is required.");
+            }
 
             return new Specialty(
                 SpecialtyId.New(),
                 name.Trim(),
-                NormalizeOptional(description));
+                description);
         }
 
         public void Rename(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
-                throw new DomainException("Specialty name is required.");
+            {
+                throw new DomainException(
+                    "Specialty name is required.");
+            }
 
             Name = name.Trim();
         }
@@ -67,7 +79,9 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Specialties
 
         private static string? NormalizeOptional(string? value)
         {
-            return string.IsNullOrWhiteSpace(value)? null: value.Trim();
+            return string.IsNullOrWhiteSpace(value)
+                ? null
+                : value.Trim();
         }
     }
 

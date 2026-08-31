@@ -6,7 +6,6 @@ using System.Text;
 
 namespace HospitalSystem.Application.Modules.Scheduling.Departments.Queries.GetDepartmentById
 {
-    public sealed record GetDepartmentByIdQuery(
-        Guid DepartmentId) : IQuery<DepartmentDto>;
+    public sealed record GetDepartmentByIdQuery(Guid DepartmentId) : IQuery<DepartmentDto>;
 
 }

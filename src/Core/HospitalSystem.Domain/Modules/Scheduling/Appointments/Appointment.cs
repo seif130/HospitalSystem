@@ -56,11 +56,12 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Appointments
             ClinicRoomId clinicRoomId,
             DateRange scheduledPeriod,
             AppointmentType type,
+            DateTime utcNow,
             string? reason = null)
         {
             ArgumentNullException.ThrowIfNull(scheduledPeriod);
 
-            if (scheduledPeriod.Start <= DateTime.UtcNow)
+            if (scheduledPeriod.Start <= utcNow)
             {
                 throw new DomainException(
                     "Appointment must be scheduled in the future.");
@@ -91,13 +92,15 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Appointments
             return appointment;
         }
 
-        public void Reschedule(DateRange newPeriod)
+        public void Reschedule(
+            DateRange newPeriod,
+            DateTime utcNow)
         {
             EnsureModifiable();
 
             ArgumentNullException.ThrowIfNull(newPeriod);
 
-            if (newPeriod.Start <= DateTime.UtcNow)
+            if (newPeriod.Start <= utcNow)
             {
                 throw new DomainException(
                     "New appointment time must be in the future.");
@@ -133,7 +136,10 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Appointments
             Status = AppointmentStatus.CheckedIn;
 
             AddDomainEvent(
-                new AppointmentCheckedInEvent(Id,PatientId,DoctorId));
+                new AppointmentCheckedInEvent(
+                    Id,
+                    PatientId,
+                    DoctorId));
         }
 
         public void Complete()
@@ -147,7 +153,10 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Appointments
             Status = AppointmentStatus.Completed;
 
             AddDomainEvent(
-                new AppointmentCompletedEvent(Id,PatientId,DoctorId));
+                new AppointmentCompletedEvent(
+                    Id,
+                    PatientId,
+                    DoctorId));
         }
 
         public void Cancel(string reason)
@@ -156,7 +165,8 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Appointments
 
             if (string.IsNullOrWhiteSpace(reason))
             {
-                throw new DomainException("Cancellation reason is required.");
+                throw new DomainException(
+                    "Cancellation reason is required.");
             }
 
             var cancellationReason = reason.Trim();
@@ -165,7 +175,11 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Appointments
             CancellationReason = cancellationReason;
 
             AddDomainEvent(
-                new AppointmentCancelledEvent(Id,PatientId, DoctorId,cancellationReason));
+                new AppointmentCancelledEvent(
+                    Id,
+                    PatientId,
+                    DoctorId,
+                    cancellationReason));
         }
 
         public void MarkAsNoShow(DateTime utcNow)
@@ -185,7 +199,10 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Appointments
             Status = AppointmentStatus.NoShow;
 
             AddDomainEvent(
-                new AppointmentNoShowEvent(Id, PatientId, DoctorId));
+                new AppointmentNoShowEvent(
+                    Id,
+                    PatientId,
+                    DoctorId));
         }
 
         private void EnsureModifiable()
@@ -199,9 +216,10 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Appointments
 
         private static string? NormalizeOptional(string? value)
         {
-            return string.IsNullOrWhiteSpace(value)? null: value.Trim();
+            return string.IsNullOrWhiteSpace(value)
+                ? null
+                : value.Trim();
         }
     }
-
 
 }

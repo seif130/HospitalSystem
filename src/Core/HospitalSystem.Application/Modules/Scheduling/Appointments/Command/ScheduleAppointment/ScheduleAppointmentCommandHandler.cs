@@ -1,10 +1,12 @@
-﻿using HospitalSystem.Application.Shared.Common;
+﻿using HospitalSystem.Application.Shared.Abstractions;
+using HospitalSystem.Application.Shared.Common;
 using HospitalSystem.Application.Shared.Messaging;
 using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Modules.Scheduling.Appointments;
 using HospitalSystem.Domain.Modules.Scheduling.Appointments.Contract;
 using HospitalSystem.Domain.Modules.Scheduling.ClinicRooms.Contract;
 using HospitalSystem.Domain.Modules.Scheduling.Doctors.Contract;
+using HospitalSystem.Domain.Reprository;
 using HospitalSystem.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -12,20 +14,27 @@ using System.Text;
 
 namespace HospitalSystem.Application.Modules.Scheduling.Appointments.Command.ScheduleAppointment
 {
-    public sealed class ScheduleAppointmentCommandHandler: ICommandHandler<ScheduleAppointmentCommand, Guid>
+    public sealed class ScheduleAppointmentCommandHandler
+      : ICommandHandler<ScheduleAppointmentCommand, Guid>
     {
         private readonly IAppointmentRepository _appointments;
         private readonly IDoctorRepository _doctors;
         private readonly IClinicRoomRepository _clinicRooms;
+        private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IUnitOfWork _unitOfWork;
 
         public ScheduleAppointmentCommandHandler(
             IAppointmentRepository appointments,
             IDoctorRepository doctors,
-            IClinicRoomRepository clinicRooms)
+            IClinicRoomRepository clinicRooms,
+            IDateTimeProvider dateTimeProvider,
+            IUnitOfWork unitOfWork)
         {
             _appointments = appointments;
             _doctors = doctors;
             _clinicRooms = clinicRooms;
+            _dateTimeProvider = dateTimeProvider;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result<Guid>> Handle(
@@ -63,7 +72,7 @@ namespace HospitalSystem.Application.Modules.Scheduling.Appointments.Command.Sch
             if (await _appointments.HasDoctorConflictAsync(
                     doctorId,
                     period,
-                    cancellationToken))
+                    ct: cancellationToken))
             {
                 return Result.Failure<Guid>(
                     Error.Conflict(
@@ -74,7 +83,7 @@ namespace HospitalSystem.Application.Modules.Scheduling.Appointments.Command.Sch
             if (await _appointments.HasPatientConflictAsync(
                     patientId,
                     period,
-                    cancellationToken))
+                    ct: cancellationToken))
             {
                 return Result.Failure<Guid>(
                     Error.Conflict(
@@ -83,13 +92,10 @@ namespace HospitalSystem.Application.Modules.Scheduling.Appointments.Command.Sch
             }
 
             if (await _appointments.HasClinicRoomConflictAsync(
-                    clinicRoomId,
-                    period,
-                    cancellationToken))
+                    clinicRoomId,period,ct: cancellationToken))
             {
                 return Result.Failure<Guid>(
-                    Error.Conflict(
-                        "Appointment.ClinicRoomConflict",
+                    Error.Conflict("Appointment.ClinicRoomConflict",
                         "Clinic room is already booked during this period."));
             }
 
@@ -99,9 +105,12 @@ namespace HospitalSystem.Application.Modules.Scheduling.Appointments.Command.Sch
                 clinicRoomId,
                 period,
                 request.Type,
+                _dateTimeProvider.UtcNow,
                 request.Reason);
 
-            await _appointments.AddAsync(appointment, cancellationToken);
+            await _appointments.AddAsync(appointment,cancellationToken);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success(appointment.Id.Value);
         }

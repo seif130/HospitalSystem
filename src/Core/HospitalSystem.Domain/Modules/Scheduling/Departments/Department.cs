@@ -15,18 +15,18 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Departments
         {
         }
 
-        private Department( DepartmentId id, string name, string? description): base(id)
+        private Department(DepartmentId id, string name,string? description): base(id)
         {
             Name = name;
             Description = NormalizeOptional(description);
         }
 
-        public static Department Create( string name,string? description = null)
+        public static Department Create(string name,string? description = null)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new DomainException("Department name is required.");
 
-            return new Department(DepartmentId.New(), name.Trim(), NormalizeOptional(description));
+            return new Department(DepartmentId.New(), name.Trim(), description);
         }
 
         public void Rename(string name)
@@ -44,7 +44,7 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Departments
 
         private static string? NormalizeOptional(string? value)
         {
-            return string.IsNullOrWhiteSpace(value)? null: value.Trim();
+            return string.IsNullOrWhiteSpace(value) ? null: value.Trim();
         }
     }
 

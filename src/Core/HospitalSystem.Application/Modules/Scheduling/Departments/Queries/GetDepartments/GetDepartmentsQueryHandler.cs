@@ -8,8 +8,7 @@ using System.Text;
 
 namespace HospitalSystem.Application.Modules.Scheduling.Departments.Queries.GetDepartments
 {
-    public sealed class GetDepartmentsQueryHandler
-      : IQueryHandler<GetDepartmentsQuery,IReadOnlyList<DepartmentDto>>
+    public sealed class GetDepartmentsQueryHandler: IQueryHandler<GetDepartmentsQuery, IReadOnlyList<DepartmentDto>>
     {
         private readonly IDepartmentRepository _departments;
 
@@ -18,14 +17,14 @@ namespace HospitalSystem.Application.Modules.Scheduling.Departments.Queries.GetD
             _departments = departments;
         }
 
-        public async Task<Result<IReadOnlyList<DepartmentDto>>> Handle(
-            GetDepartmentsQuery request,CancellationToken cancellationToken)
+        public async Task<Result<IReadOnlyList<DepartmentDto>>> Handle(GetDepartmentsQuery request,
+            CancellationToken cancellationToken = default)
         {
             var departments = await _departments.GetAllAsync(cancellationToken);
 
             var result = departments.Select(x => x.ToDto()).ToList();
 
-            return result;
+            return Result.Success<IReadOnlyList<DepartmentDto>>(result);
         }
     }
 

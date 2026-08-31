@@ -10,5 +10,6 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Departments.Contract
     {
         Task<bool> ExistsByNameAsync(string name,CancellationToken ct = default);
         Task<IReadOnlyList<Department>> GetAllAsync(CancellationToken ct = default);
+        Task<Department?> GetByIdAsNoTrackingAsync(DepartmentId id,CancellationToken ct = default);
     }
 }

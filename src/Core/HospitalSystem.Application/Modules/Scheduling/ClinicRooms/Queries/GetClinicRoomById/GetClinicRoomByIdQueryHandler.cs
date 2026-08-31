@@ -9,8 +9,7 @@ using System.Text;
 
 namespace HospitalSystem.Application.Modules.Scheduling.ClinicRooms.Queries.GetClinicRoomById
 {
-    public sealed class GetClinicRoomByIdQueryHandler
-        : IQueryHandler<GetClinicRoomByIdQuery, ClinicRoomDto>
+    public sealed class GetClinicRoomByIdQueryHandler: IQueryHandler<GetClinicRoomByIdQuery, ClinicRoomDto>
     {
         private readonly IClinicRoomRepository _rooms;
 
@@ -20,19 +19,16 @@ namespace HospitalSystem.Application.Modules.Scheduling.ClinicRooms.Queries.GetC
             _rooms = rooms;
         }
 
-        public async Task<Result<ClinicRoomDto>> Handle(
-            GetClinicRoomByIdQuery request,
+        public async Task<Result<ClinicRoomDto>> Handle(GetClinicRoomByIdQuery request,
             CancellationToken cancellationToken)
         {
             var room = await _rooms.GetByIdAsync(
-                new ClinicRoomId(request.ClinicRoomId),
-                cancellationToken);
+                new ClinicRoomId(request.ClinicRoomId),cancellationToken);
 
             if (room is null)
             {
                 return Result.Failure<ClinicRoomDto>(
-                    Error.NotFound(
-                        "ClinicRoom.NotFound",
+                    Error.NotFound("ClinicRoom.NotFound",
                         "Clinic room was not found."));
             }
 

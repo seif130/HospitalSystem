@@ -7,7 +7,7 @@ using System.Text;
 
 namespace HospitalSystem.Domain.Modules.Scheduling.Doctors
 {
-    public sealed class DoctorSchedule: BaseEntity<DoctorScheduleId>
+    public sealed class DoctorSchedule: AggregateRoot<DoctorScheduleId>
     {
         public DoctorId DoctorId { get; private set; } = null!;
 
@@ -41,6 +41,32 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Doctors
             TimeSpan startTime,
             TimeSpan endTime)
         {
+            ValidateTime(startTime, endTime);
+
+            return new DoctorSchedule(
+                DoctorScheduleId.New(),
+                doctorId,
+                dayOfWeek,
+                startTime,
+                endTime);
+        }
+
+        public void Update(
+            DayOfWeek dayOfWeek,
+            TimeSpan startTime,
+            TimeSpan endTime)
+        {
+            ValidateTime(startTime, endTime);
+
+            DayOfWeek = dayOfWeek;
+            StartTime = startTime;
+            EndTime = endTime;
+        }
+
+        private static void ValidateTime(
+            TimeSpan startTime,
+            TimeSpan endTime)
+        {
             if (startTime < TimeSpan.Zero)
             {
                 throw new DomainException(
@@ -58,13 +84,6 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Doctors
                 throw new DomainException(
                     "Schedule end time cannot exceed 24 hours.");
             }
-
-            return new DoctorSchedule(
-                DoctorScheduleId.New(),
-                doctorId,
-                dayOfWeek,
-                startTime,
-                endTime);
         }
     }
 

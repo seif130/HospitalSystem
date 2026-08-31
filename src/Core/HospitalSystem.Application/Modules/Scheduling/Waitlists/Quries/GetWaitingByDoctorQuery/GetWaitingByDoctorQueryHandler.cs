@@ -11,26 +11,34 @@ using System.Text;
 namespace HospitalSystem.Application.Modules.Scheduling.Waitlists.Quries.GetWaitingByDoctorQuery
 {
     public sealed class GetWaitingByDoctorQueryHandler
-        : IQueryHandler<GetWaitingByDoctorQuery,IReadOnlyList<WaitlistDto>>
+      : IQueryHandler<GetWaitingByDoctorQuery, IReadOnlyList<WaitlistDto>>
     {
         private readonly IWaitlistRepository _waitlists;
 
-        public GetWaitingByDoctorQueryHandler(IWaitlistRepository waitlists)
+        public GetWaitingByDoctorQueryHandler(
+            IWaitlistRepository waitlists)
         {
             _waitlists = waitlists;
         }
 
         public async Task<Result<IReadOnlyList<WaitlistDto>>> Handle(
-            GetWaitingByDoctorQuery request,CancellationToken cancellationToken)
+            GetWaitingByDoctorQuery request,
+            CancellationToken cancellationToken)
         {
-            var period = DateRange.Create(request.FromUtc,request.ToUtc);
+            var period = DateRange.Create(
+                request.FromUtc,
+                request.ToUtc);
 
             var entries = await _waitlists.GetWaitingByDoctorAsync(
                 new DoctorId(request.DoctorId),
-                period,cancellationToken);
+                period,
+                cancellationToken);
 
-            return entries.Select(x => x.ToDto()).ToList();
+            var result = entries
+                .Select(x => x.ToDto())
+                .ToList();
+
+            return Result.Success<IReadOnlyList<WaitlistDto>>(result);
         }
     }
-
 }

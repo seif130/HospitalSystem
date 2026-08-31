@@ -5,49 +5,46 @@ using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Modules.Scheduling.ClinicRooms;
 using HospitalSystem.Domain.Modules.Scheduling.ClinicRooms.Contract;
 using HospitalSystem.Domain.Modules.Scheduling.Departments.Contract;
+using HospitalSystem.Domain.Reprository;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace HospitalSystem.Application.Modules.Scheduling.ClinicRooms.CreateClinicRoom
 {
-    public sealed class CreateClinicRoomCommandHandler
-     : ICommandHandler<CreateClinicRoomCommand, Guid>
+    public sealed class CreateClinicRoomCommandHandler: ICommandHandler<CreateClinicRoomCommand, Guid>
     {
         private readonly IClinicRoomRepository _rooms;
         private readonly IDepartmentRepository _departments;
+        private readonly IUnitOfWork _unitOfWork;
 
         public CreateClinicRoomCommandHandler(
             IClinicRoomRepository rooms,
-            IDepartmentRepository departments)
+            IDepartmentRepository departments,
+            IUnitOfWork unitOfWork)
         {
             _rooms = rooms;
             _departments = departments;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result<Guid>> Handle(
             CreateClinicRoomCommand request,
             CancellationToken cancellationToken)
         {
-            var departmentId =
-                new DepartmentId(request.DepartmentId);
+            var departmentId = new DepartmentId(request.DepartmentId);
 
-            var department = await _departments.GetByIdAsync(
-                departmentId,
-                cancellationToken);
+            var department = await _departments.GetByIdAsync(departmentId,cancellationToken);
 
             if (department is null)
             {
                 return Result.Failure<Guid>(
-                    Error.NotFound(
-                        "Department.NotFound",
+                    Error.NotFound("Department.NotFound",
                         "Department was not found."));
             }
 
-            var exists = await _rooms.ExistsByRoomNumberAsync(
-                request.RoomNumber,
-                departmentId,
-                cancellationToken);
+            var exists = await _rooms.ExistsByRoomNumberAsync(request.RoomNumber,
+                departmentId,cancellationToken);
 
             if (exists)
             {
@@ -62,7 +59,11 @@ namespace HospitalSystem.Application.Modules.Scheduling.ClinicRooms.CreateClinic
                 departmentId,
                 request.Capacity);
 
-            await _rooms.AddAsync(room, cancellationToken);
+            await _rooms.AddAsync(
+                room,
+                cancellationToken);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success(room.Id.Value);
         }

@@ -20,7 +20,7 @@ namespace HospitalSystem.Application
 
                 cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
                 cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
-                cfg.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
+   
             });
 
             services.AddValidatorsFromAssembly(assembly);

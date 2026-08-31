@@ -18,26 +18,27 @@ namespace HospitalSystem.Infrastructure.Repositories.Scheduling
         }
 
         public async Task<IReadOnlyList<Waitlist>> GetWaitingByDoctorAsync(
-            DoctorId doctorId,DateRange period,CancellationToken ct = default)
+            DoctorId doctorId, DateRange period, CancellationToken ct = default)
         {
             ArgumentNullException.ThrowIfNull(period);
 
+            var periodEnd = period.End ?? DateTime.MaxValue;
+
             return await DbSet
                 .AsNoTracking()
-                .Where(x =>x.DoctorId == doctorId &&
+                .Where(x => x.DoctorId == doctorId &&
                     x.Status == WaitlistEntryStatus.Waiting &&
-                    x.PreferredFromUtc < (period.End ?? DateTime.MaxValue) && period.Start < x.PreferredToUtc)
-                .OrderBy(x => x.JoinedOnUtc)
-                .ToListAsync(ct);
+                    x.PreferredFromUtc < periodEnd &&
+                    period.Start < x.PreferredToUtc)
+                .OrderBy(x => x.JoinedOnUtc).ToListAsync(ct);
         }
 
-        public Task<bool> HasActiveEntryAsync(PatientId patientId,DoctorId doctorId,
-            CancellationToken ct = default)
+        public Task<bool> HasActiveEntryAsync(PatientId patientId, DoctorId doctorId, CancellationToken ct = default)
         {
-            return DbSet.AnyAsync(
-                x =>x.PatientId == patientId &&
+            return DbSet.AnyAsync(x =>x.PatientId == patientId &&
                     x.DoctorId == doctorId &&
-                    x.Status == WaitlistEntryStatus.Waiting,ct);
+                    x.Status != WaitlistEntryStatus.Cancelled &&
+                    x.Status != WaitlistEntryStatus.Booked,ct);
         }
     }
 

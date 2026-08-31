@@ -10,29 +10,22 @@ using System.Text;
 namespace HospitalSystem.Application.Modules.Scheduling.ClinicRooms.Queries.GetClinicRoomsByDepartment
 {
     public sealed class GetClinicRoomsByDepartmentQueryHandler
-        : IQueryHandler<
-            GetClinicRoomsByDepartmentQuery,
-            IReadOnlyList<ClinicRoomDto>>
+      : IQueryHandler<GetClinicRoomsByDepartmentQuery,IReadOnlyList<ClinicRoomDto>>
     {
         private readonly IClinicRoomRepository _rooms;
 
-        public GetClinicRoomsByDepartmentQueryHandler(
-            IClinicRoomRepository rooms)
+        public GetClinicRoomsByDepartmentQueryHandler(IClinicRoomRepository rooms)
         {
             _rooms = rooms;
         }
 
         public async Task<Result<IReadOnlyList<ClinicRoomDto>>> Handle(
-            GetClinicRoomsByDepartmentQuery request,
-            CancellationToken cancellationToken)
+            GetClinicRoomsByDepartmentQuery request,CancellationToken cancellationToken)
         {
             var rooms = await _rooms.GetByDepartmentAsync(
-                new DepartmentId(request.DepartmentId),
-                cancellationToken);
+                new DepartmentId(request.DepartmentId),cancellationToken);
 
-            return rooms
-                .Select(x => x.ToDto())
-                .ToList();
+            return rooms.Select(x => x.ToDto()).ToList();
         }
     }
 

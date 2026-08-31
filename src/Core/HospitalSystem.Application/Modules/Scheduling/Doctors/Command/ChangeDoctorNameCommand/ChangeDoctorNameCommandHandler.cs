@@ -2,6 +2,7 @@
 using HospitalSystem.Application.Shared.Messaging;
 using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Modules.Scheduling.Doctors.Contract;
+using HospitalSystem.Domain.Reprository;
 using HospitalSystem.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -10,14 +11,17 @@ using System.Text;
 namespace HospitalSystem.Application.Modules.Scheduling.Doctors.Command.ChangeDoctorNameCommand
 {
     public sealed class ChangeDoctorNameCommandHandler
-        : ICommandHandler<ChangeDoctorNameCommand>
+      : ICommandHandler<ChangeDoctorNameCommand>
     {
         private readonly IDoctorRepository _doctors;
+        private readonly IUnitOfWork _unitOfWork;
 
         public ChangeDoctorNameCommandHandler(
-            IDoctorRepository doctors)
+            IDoctorRepository doctors,
+            IUnitOfWork unitOfWork)
         {
             _doctors = doctors;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result> Handle(
@@ -31,13 +35,19 @@ namespace HospitalSystem.Application.Modules.Scheduling.Doctors.Command.ChangeDo
             if (doctor is null)
             {
                 return Result.Failure(
-                    Error.NotFound("Doctor.NotFound","Doctor was not found."));
+                    Error.NotFound(
+                        "Doctor.NotFound",
+                        "Doctor was not found."));
             }
 
             var name = PersonName.Create(
-                request.FirstName,request.LastName);
+                request.FirstName,
+                request.LastName);
 
             doctor.ChangeName(name);
+
+            await _unitOfWork.SaveChangesAsync(
+                cancellationToken);
 
             return Result.Success();
         }

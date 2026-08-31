@@ -10,7 +10,9 @@ using System.Text;
 namespace HospitalSystem.Application.Modules.Scheduling.Doctors.Quries.GetDoctorsByDepartmentQuery
 {
     public sealed class GetDoctorsByDepartmentQueryHandler
-        : IQueryHandler<GetDoctorsByDepartmentQuery,IReadOnlyList<DoctorDto>>
+      : IQueryHandler<
+          GetDoctorsByDepartmentQuery,
+          IReadOnlyList<DoctorDto>>
     {
         private readonly IDoctorRepository _doctors;
 
@@ -21,12 +23,16 @@ namespace HospitalSystem.Application.Modules.Scheduling.Doctors.Quries.GetDoctor
         }
 
         public async Task<Result<IReadOnlyList<DoctorDto>>> Handle(
-            GetDoctorsByDepartmentQuery request,CancellationToken cancellationToken)
+            GetDoctorsByDepartmentQuery request,
+            CancellationToken cancellationToken)
         {
             var doctors = await _doctors.GetByDepartmentAsync(
-                new DepartmentId(request.DepartmentId),cancellationToken);
+                new DepartmentId(request.DepartmentId),
+                cancellationToken);
 
-            return doctors.Select(x => x.ToDto()).ToList();
+            return doctors
+                .Select(x => x.ToDto())
+                .ToList();
         }
     }
 

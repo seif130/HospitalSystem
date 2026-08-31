@@ -12,15 +12,11 @@ using System.Text;
 
 namespace HospitalSystem.Infrastructure.Repositories.Scheduling
 {
-    public sealed class ClinicRoomRepository
-     : Repository<ClinicRoom, ClinicRoomId>,
-       IClinicRoomRepository
+    public sealed class ClinicRoomRepository: Repository<ClinicRoom, ClinicRoomId>,IClinicRoomRepository
     {
         private readonly SchedulingDbContext _context;
 
-        public ClinicRoomRepository(
-            SchedulingDbContext context)
-            : base(context)
+        public ClinicRoomRepository(SchedulingDbContext context): base(context)
         {
             _context = context;
         }
@@ -36,10 +32,7 @@ namespace HospitalSystem.Infrastructure.Repositories.Scheduling
             var normalized = roomNumber.Trim();
 
             return DbSet.AnyAsync(
-                x =>
-                    x.RoomNumber == normalized &&
-                    x.DepartmentId == departmentId,
-                ct);
+                x => x.RoomNumber == normalized && x.DepartmentId == departmentId,ct);
         }
 
         public async Task<IReadOnlyList<ClinicRoom>> GetByDepartmentAsync(
@@ -54,8 +47,7 @@ namespace HospitalSystem.Infrastructure.Repositories.Scheduling
         }
 
         public async Task<IReadOnlyList<ClinicRoom>> GetAvailableRoomsAsync(
-            DepartmentId departmentId,
-            DateRange period,
+            DepartmentId departmentId,DateRange period,
             CancellationToken ct = default)
         {
             ArgumentNullException.ThrowIfNull(period);
@@ -72,17 +64,11 @@ namespace HospitalSystem.Infrastructure.Repositories.Scheduling
                         appointment.Status != AppointmentStatus.Cancelled &&
                         appointment.Status != AppointmentStatus.NoShow &&
 
-                        appointment.ScheduledPeriod.Start <
-                            (period.End ?? DateTime.MaxValue) &&
+                        appointment.ScheduledPeriod.Start < (period.End ?? DateTime.MaxValue) &&
 
-                        period.Start <
-                            (appointment.ScheduledPeriod.End ??
-                             DateTime.MaxValue)))
-                .OrderBy(room => room.RoomNumber)
-                .ToListAsync(ct);
+                        period.Start <(appointment.ScheduledPeriod.End ?? DateTime.MaxValue)))
+                .OrderBy(room => room.RoomNumber).ToListAsync(ct);
         }
     }
-
-
 
 }

@@ -9,10 +9,7 @@ using System.Text;
 
 namespace HospitalSystem.Application.Modules.Scheduling.Specialty.Quires.GetSpecialties
 {
-    public sealed class GetSpecialtiesQueryHandler
-          : IQueryHandler<
-              GetSpecialtiesQuery,
-              IReadOnlyList<SpecialtyDto>>
+    public sealed class GetSpecialtiesQueryHandler: IQueryHandler<GetSpecialtiesQuery,IReadOnlyList<SpecialtyDto>>
     {
         private readonly ISpecialtyRepository _specialties;
 
@@ -23,8 +20,7 @@ namespace HospitalSystem.Application.Modules.Scheduling.Specialty.Quires.GetSpec
         }
 
         public async Task<Result<IReadOnlyList<SpecialtyDto>>> Handle(
-            GetSpecialtiesQuery request,
-            CancellationToken cancellationToken)
+            GetSpecialtiesQuery request,CancellationToken cancellationToken = default)
         {
             var specialties = await _specialties.GetAllAsync(
                 cancellationToken);

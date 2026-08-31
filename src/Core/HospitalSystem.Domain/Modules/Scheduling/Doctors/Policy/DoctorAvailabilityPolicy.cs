@@ -7,31 +7,35 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Doctors.Policy
 {
     public sealed class DoctorAvailabilityPolicy
     {
-        public bool IsAvailable( DateRange requestedPeriod, IEnumerable<DoctorSchedule> schedules,
+        public bool IsAvailable(DateRange requestedPeriod,IEnumerable<DoctorSchedule> schedules,
             IEnumerable<DoctorTimeOff> timeOffs)
         {
-            var end = requestedPeriod.End;
+            ArgumentNullException.ThrowIfNull(requestedPeriod);
+            ArgumentNullException.ThrowIfNull(schedules);
+            ArgumentNullException.ThrowIfNull(timeOffs);
 
-            if (end is null)
+            if (requestedPeriod.End is null)
                 return false;
+
+            var end = requestedPeriod.End.Value;
 
             var dayOfWeek = requestedPeriod.Start.DayOfWeek;
 
             var startTime = requestedPeriod.Start.TimeOfDay;
-            var endTime = end.Value.TimeOfDay;
+            var endTime = end.TimeOfDay;
 
-            var isWithinWorkingSchedule = schedules.Any(schedule =>
+            var isWithinSchedule = schedules.Any(schedule =>
                 schedule.DayOfWeek == dayOfWeek &&
                 schedule.StartTime <= startTime &&
                 schedule.EndTime >= endTime);
 
-            if (!isWithinWorkingSchedule)
+            if (!isWithinSchedule)
                 return false;
 
-            var isOnTimeOff = timeOffs.Any(timeOff =>
+            var isTimeOff = timeOffs.Any(timeOff =>
                 timeOff.Period.Overlaps(requestedPeriod));
 
-            return !isOnTimeOff;
+            return !isTimeOff;
         }
     }
 

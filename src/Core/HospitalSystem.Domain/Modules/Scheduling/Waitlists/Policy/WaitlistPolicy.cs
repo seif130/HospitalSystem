@@ -9,7 +9,7 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Waitlists.Policy
 {
     public sealed class WaitlistPolicy
     {
-        public bool IsEligibleForAppointment( Waitlist waitlist, Appointment appointment)
+        public bool IsEligibleForAppointment(Waitlist waitlist,Appointment appointment)
         {
             if (waitlist.Status != WaitlistEntryStatus.Waiting)
                 return false;
@@ -20,8 +20,10 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Waitlists.Policy
             if (appointment.Status != AppointmentStatus.Scheduled)
                 return false;
 
-            return waitlist.PreferredFromUtc <= appointment.ScheduledPeriod.Start
-                   && waitlist.PreferredToUtc >= appointment.ScheduledPeriod.Start;
+            var appointmentStart = appointment.ScheduledPeriod.Start;
+
+            return waitlist.PreferredFromUtc <= appointmentStart
+                && appointmentStart <= waitlist.PreferredToUtc;
         }
     }
 

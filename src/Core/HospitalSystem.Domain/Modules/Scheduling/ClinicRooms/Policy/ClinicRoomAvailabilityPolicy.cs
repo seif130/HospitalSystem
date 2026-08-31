@@ -9,17 +9,20 @@ namespace HospitalSystem.Domain.Modules.Scheduling.ClinicRooms.Policy
 {
     public sealed class ClinicRoomAvailabilityPolicy
     {
-        public bool HasConflict(
-            DateRange requestedPeriod, IEnumerable<Appointment> existingAppointments)
+        public bool HasConflict(DateRange requestedPeriod,
+            IEnumerable<Appointment> existingAppointments)
         {
             return existingAppointments.Any(appointment =>
             {
-                if (appointment.Status is AppointmentStatus.Cancelled or AppointmentStatus.NoShow)
+                if (appointment.Status is
+                    AppointmentStatus.Cancelled or
+                    AppointmentStatus.NoShow)
                 {
                     return false;
                 }
 
-                return appointment.ScheduledPeriod.Overlaps(requestedPeriod);
+                return appointment.ScheduledPeriod
+                    .Overlaps(requestedPeriod);
             });
         }
     }

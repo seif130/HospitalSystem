@@ -12,9 +12,7 @@ using System.Text;
 namespace HospitalSystem.Application.Modules.Scheduling.Appointments.Query.GetPatientAppointments
 {
     public sealed class GetPatientAppointmentsQueryHandler
-     : IQueryHandler<
-         GetPatientAppointmentsQuery,
-         IReadOnlyList<AppointmentDto>>
+     : IQueryHandler<GetPatientAppointmentsQuery,IReadOnlyList<AppointmentDto>>
     {
         private readonly IAppointmentRepository _appointments;
 

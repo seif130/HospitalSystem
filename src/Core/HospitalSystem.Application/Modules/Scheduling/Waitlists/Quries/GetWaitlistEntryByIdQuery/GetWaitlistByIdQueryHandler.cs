@@ -10,7 +10,7 @@ using System.Text;
 namespace HospitalSystem.Application.Modules.Scheduling.Waitlists.Quries.GetWaitlistEntryByIdQuery
 {
     public sealed class GetWaitlistByIdQueryHandler
-        : IQueryHandler<GetWaitlistByIdQuery, WaitlistDto>
+      : IQueryHandler<GetWaitlistByIdQuery, WaitlistDto>
     {
         private readonly IWaitlistRepository _waitlists;
 
@@ -36,8 +36,8 @@ namespace HospitalSystem.Application.Modules.Scheduling.Waitlists.Quries.GetWait
                         "Waitlist entry was not found."));
             }
 
-            return waitlist.ToDto();
+            return Result.Success(
+                waitlist.ToDto());
         }
     }
-
 }

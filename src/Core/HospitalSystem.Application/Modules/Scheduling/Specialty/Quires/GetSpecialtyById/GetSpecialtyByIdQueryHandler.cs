@@ -11,9 +11,7 @@ using System.Text;
 namespace HospitalSystem.Application.Modules.Scheduling.Specialty.Quires.GetSpecialtyById
 {
     public sealed class GetSpecialtyByIdQueryHandler
-           : IQueryHandler<
-               GetSpecialtyByIdQuery,
-               SpecialtyDto>
+           : IQueryHandler<GetSpecialtyByIdQuery,SpecialtyDto>
     {
         private readonly ISpecialtyRepository _specialties;
 

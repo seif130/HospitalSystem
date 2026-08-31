@@ -26,28 +26,58 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Waitlists
         {
         }
 
-        private Waitlist(WaitlistId id, PatientId patientId, DoctorId doctorId,
-            DateTime preferredFromUtc, DateTime preferredToUtc): base(id)
+        private Waitlist(
+            WaitlistId id,
+            PatientId patientId,
+            DoctorId doctorId,
+            DateTime preferredFromUtc,
+            DateTime preferredToUtc,
+            DateTime joinedOnUtc)
+            : base(id)
         {
             PatientId = patientId;
             DoctorId = doctorId;
             PreferredFromUtc = preferredFromUtc;
             PreferredToUtc = preferredToUtc;
+            JoinedOnUtc = joinedOnUtc;
+
             Status = WaitlistEntryStatus.Waiting;
-            JoinedOnUtc = DateTime.UtcNow;
         }
 
         public static Waitlist Join(
-            PatientId patientId,DoctorId doctorId, DateTime preferredFromUtc, DateTime preferredToUtc)
+            PatientId patientId,
+            DoctorId doctorId,
+            DateTime preferredFromUtc,
+            DateTime preferredToUtc,
+            DateTime joinedOnUtc)
         {
+            if (preferredFromUtc.Kind != DateTimeKind.Utc ||
+                preferredToUtc.Kind != DateTimeKind.Utc ||
+                joinedOnUtc.Kind != DateTimeKind.Utc)
+            {
+                throw new DomainException("Waitlist dates must be in UTC.");
+            }
+
             if (preferredToUtc <= preferredFromUtc)
+            {
                 throw new DomainException("Preferred date range is invalid.");
+            }
 
             var waitlist = new Waitlist(
-                WaitlistId.New(), patientId, doctorId,preferredFromUtc, preferredToUtc);
+                WaitlistId.New(),
+                patientId,
+                doctorId,
+                preferredFromUtc,
+                preferredToUtc,
+                joinedOnUtc);
 
             waitlist.AddDomainEvent(
-                new WaitlistJoinedEvent(waitlist.Id,patientId, doctorId, preferredFromUtc, preferredToUtc));
+                new WaitlistJoinedEvent(
+                    waitlist.Id,
+                    patientId,
+                    doctorId,
+                    preferredFromUtc,
+                    preferredToUtc));
 
             return waitlist;
         }
@@ -55,31 +85,40 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Waitlists
         public void OfferSlot(AppointmentId appointmentId)
         {
             if (Status != WaitlistEntryStatus.Waiting)
-                throw new DomainException("Only a waiting entry can be offered a slot.");
+            {
+                throw new DomainException(
+                    "Only a waiting entry can be offered a slot.");
+            }
 
             OfferedAppointmentId = appointmentId;
             Status = WaitlistEntryStatus.Offered;
 
-            AddDomainEvent(new WaitlistSlotOfferedEvent( Id, PatientId, appointmentId));
+            AddDomainEvent(
+                new WaitlistSlotOfferedEvent(Id, PatientId,appointmentId));
         }
 
         public void ConfirmBooking()
         {
             if (Status != WaitlistEntryStatus.Offered)
-                throw new DomainException( "No offer is pending confirmation.");
+            {
+                throw new DomainException("No offer is pending confirmation.");
+            }
 
             var appointmentId = OfferedAppointmentId
-                ?? throw new DomainException( "No appointment has been offered.");
+                ?? throw new DomainException("No appointment has been offered.");
 
             Status = WaitlistEntryStatus.Booked;
 
-            AddDomainEvent( new WaitlistBookingConfirmedEvent( Id, PatientId, appointmentId));
+            AddDomainEvent(
+                new WaitlistBookingConfirmedEvent(Id,PatientId,appointmentId));
         }
 
         public void ExpireOffer()
         {
             if (Status != WaitlistEntryStatus.Offered)
-                throw new DomainException( "No offer is pending expiry.");
+            {
+                throw new DomainException("No offer is pending expiry.");
+            }
 
             var appointmentId = OfferedAppointmentId
                 ?? throw new DomainException("No appointment has been offered.");
@@ -87,13 +126,15 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Waitlists
             Status = WaitlistEntryStatus.Waiting;
             OfferedAppointmentId = null;
 
-            AddDomainEvent( new WaitlistOfferExpiredEvent( Id, PatientId, appointmentId));
+            AddDomainEvent(new WaitlistOfferExpiredEvent(Id,PatientId, appointmentId));
         }
 
         public void Cancel()
         {
             if (Status == WaitlistEntryStatus.Booked)
-                throw new DomainException( "A booked waitlist entry cannot be cancelled.");
+            {
+                throw new DomainException("A booked waitlist entry cannot be cancelled.");
+            }
 
             if (Status == WaitlistEntryStatus.Cancelled)
                 return;
@@ -101,9 +142,8 @@ namespace HospitalSystem.Domain.Modules.Scheduling.Waitlists
             Status = WaitlistEntryStatus.Cancelled;
             OfferedAppointmentId = null;
 
-            AddDomainEvent( new WaitlistCancelledEvent( Id, PatientId, DoctorId));
+            AddDomainEvent(new WaitlistCancelledEvent(Id, PatientId,DoctorId));
         }
     }
-
 
 }

@@ -2,20 +2,25 @@
 using HospitalSystem.Application.Shared.Messaging;
 using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Modules.Scheduling.Doctors.Contract;
+using HospitalSystem.Domain.Reprository;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace HospitalSystem.Application.Modules.Scheduling.Doctors.Command.ChangeDoctorLicenseNumberCommand
 {
-    public sealed class ChangeDoctorLicenseNumberCommandHandler: ICommandHandler<ChangeDoctorLicenseNumberCommand>
+    public sealed class ChangeDoctorLicenseNumberCommandHandler
+       : ICommandHandler<ChangeDoctorLicenseNumberCommand>
     {
         private readonly IDoctorRepository _doctors;
+        private readonly IUnitOfWork _unitOfWork;
 
         public ChangeDoctorLicenseNumberCommandHandler(
-            IDoctorRepository doctors)
+            IDoctorRepository doctors,
+            IUnitOfWork unitOfWork)
         {
             _doctors = doctors;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result> Handle(
@@ -32,6 +37,14 @@ namespace HospitalSystem.Application.Modules.Scheduling.Doctors.Command.ChangeDo
                     Error.NotFound(
                         "Doctor.NotFound",
                         "Doctor was not found."));
+            }
+
+            if (string.IsNullOrWhiteSpace(request.LicenseNumber))
+            {
+                return Result.Failure(
+                    Error.Validation(
+                        "Doctor.LicenseNumberRequired",
+                        "License number is required."));
             }
 
             var normalizedLicenseNumber =
@@ -60,8 +73,10 @@ namespace HospitalSystem.Application.Modules.Scheduling.Doctors.Command.ChangeDo
             doctor.ChangeLicenseNumber(
                 normalizedLicenseNumber);
 
+            await _unitOfWork.SaveChangesAsync(
+                cancellationToken);
+
             return Result.Success();
         }
-
     }
 }
