@@ -1,4 +1,5 @@
-﻿using HospitalSystem.Domain.Modules.LabAndRadiology.LabOrder;
+﻿
+using HospitalSystem.Domain.Modules.LabAndRadiology.LabOrder;
 using HospitalSystem.Domain.Modules.LabAndRadiology.LabResult;
 using HospitalSystem.Domain.Modules.LabAndRadiology.RadiologyOrder;
 using HospitalSystem.Domain.Modules.LabAndRadiology.RadiologyReport;

@@ -1,19 +1,18 @@
 ﻿using HospitalSystem.Infrastructure.Contexts.DbContextsCore;
+using HospitalSystem.Domain.Modules.Scheduling.Appointments.Contract;
+using HospitalSystem.Domain.Modules.Scheduling.ClinicRooms.Contract;
+using HospitalSystem.Domain.Modules.Scheduling.Departments.Contract;
+using HospitalSystem.Domain.Modules.Scheduling.Doctors.Contract;
+using HospitalSystem.Domain.Modules.Scheduling.Specialties.Contract;
+using HospitalSystem.Domain.Modules.Scheduling.Waitlists.Contract;
+using HospitalSystem.Domain.Reprository;
+using HospitalSystem.Infrastructure.Repositories.Scheduling;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace HospitalSystem.Infrastructure
 {
-    using HospitalSystem.Domain.Modules.Scheduling.Appointments.Contract;
-    using HospitalSystem.Domain.Modules.Scheduling.ClinicRooms.Contract;
-    using HospitalSystem.Domain.Modules.Scheduling.Departments.Contract;
-    using HospitalSystem.Domain.Modules.Scheduling.Doctors.Contract;
-    using HospitalSystem.Domain.Modules.Scheduling.Specialties.Contract;
-    using HospitalSystem.Domain.Modules.Scheduling.Waitlists.Contract;
-    using HospitalSystem.Domain.Reprository;
-    using HospitalSystem.Infrastructure.Repositories.Scheduling;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-
     public static class SchedulingInfrastructureExtensions
     {
         public static IServiceCollection AddSchedulingInfrastructure(

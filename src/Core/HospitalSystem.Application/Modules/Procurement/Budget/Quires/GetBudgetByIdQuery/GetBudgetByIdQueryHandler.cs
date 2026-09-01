@@ -2,7 +2,7 @@
 using HospitalSystem.Application.Shared.Common;
 using HospitalSystem.Application.Shared.Messaging;
 using HospitalSystem.Domain.Identifiers;
-using HospitalSystem.Domain.Modules.Procurement.Budget.Contract;
+using HospitalSystem.Domain.Modules.Procurement.Budgets.Contract;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -24,8 +24,7 @@ namespace HospitalSystem.Application.Modules.Procurement.Budget.Quires.GetBudget
             GetBudgetByIdQuery request,
             CancellationToken cancellationToken)
         {
-            var budget = await _budgets.GetByIdAsync(
-                new BudgetId(request.BudgetId),
+            var budget = await _budgets.GetByIdAsync(new BudgetId(request.BudgetId),
                 cancellationToken);
 
             if (budget is null)

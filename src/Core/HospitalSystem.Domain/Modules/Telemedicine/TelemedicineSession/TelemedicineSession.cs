@@ -1,4 +1,4 @@
-﻿using HospitalSystem.Domain.Identififers;
+﻿using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Modules.Telemedicine.Enums;
 using HospitalSystem.Domain.Primitives;
 using System;

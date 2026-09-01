@@ -1,6 +1,5 @@
 ﻿using HospitalSystem.Domain.Primitives;
 using HospitalSystem.Domain.Reprository;
-using HospitalSystem.Infrastructure.Contexts.DbContextsCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +7,7 @@ using System.Text;
 
 namespace HospitalSystem.Infrastructure.Repositories
 {
-    using Microsoft.EntityFrameworkCore;
+
 
     public abstract class Repository<TEntity, TId>: IRepository<TEntity, TId>
         where TEntity : AggregateRoot<TId> where TId : notnull

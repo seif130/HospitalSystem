@@ -1,4 +1,5 @@
-﻿using HospitalSystem.Domain.Modules.MultiFacility.Facility;
+﻿
+using HospitalSystem.Domain.Modules.MultiFacility.Facility;
 using HospitalSystem.Domain.Modules.MultiFacility.FacilityTransferRequest;
 using Microsoft.EntityFrameworkCore;
 using System;

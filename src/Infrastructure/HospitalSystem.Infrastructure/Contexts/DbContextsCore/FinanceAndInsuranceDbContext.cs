@@ -1,4 +1,5 @@
-﻿using HospitalSystem.Domain.Modules.FinanceAndInsurance.DiscountAdjustment;
+﻿
+using HospitalSystem.Domain.Modules.FinanceAndInsurance.DiscountAdjustment;
 using HospitalSystem.Domain.Modules.FinanceAndInsurance.InsuranceClaim;
 using HospitalSystem.Domain.Modules.FinanceAndInsurance.InsurancePolicy;
 using HospitalSystem.Domain.Modules.FinanceAndInsurance.InsuranceProvider;

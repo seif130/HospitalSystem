@@ -1,4 +1,5 @@
-﻿using HospitalSystem.Domain.Modules.Clinic.Admissions;
+﻿
+using HospitalSystem.Domain.Modules.Clinic.Admissions;
 using HospitalSystem.Domain.Modules.Clinic.DischargeSummaries;
 using HospitalSystem.Domain.Modules.Clinic.MedicalRecords;
 using HospitalSystem.Domain.Modules.Clinic.Nurses;

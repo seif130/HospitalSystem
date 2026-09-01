@@ -1,5 +1,5 @@
 ﻿using HospitalSystem.Domain.Identifiers;
-using HospitalSystem.Domain.Modules.Procurement.Budget;
+using HospitalSystem.Domain.Modules.Procurement.Budgets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -9,10 +9,10 @@ using System.Text;
 namespace HospitalSystem.Infrastructure.Configurations.Procurement
 {
     public sealed class BudgetConfiguration
-      : IEntityTypeConfiguration<Budget>
+      : IEntityTypeConfiguration<Budgets>
     {
         public void Configure(
-            EntityTypeBuilder<Budget> builder)
+            EntityTypeBuilder<Budgets> builder)
         {
             builder.ToTable("Budgets");
 

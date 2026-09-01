@@ -1,6 +1,6 @@
 ﻿using HospitalSystem.Domain.Identifiers;
-using HospitalSystem.Domain.Modules.Procurement.Budget.Contract;
 using HospitalSystem.Domain.Modules.Procurement.Budgets;
+using HospitalSystem.Domain.Modules.Procurement.Budgets.Contract;
 using HospitalSystem.Domain.ValueObjects;
 using HospitalSystem.Infrastructure.Contexts.DbContextsExtended;
 using Microsoft.EntityFrameworkCore;
@@ -11,8 +11,7 @@ using System.Text;
 namespace HospitalSystem.Infrastructure.Repositories.Procurement
 {
 
-    public sealed class BudgetRepository: Repository<Budget, BudgetId>,
-        IBudgetRepository
+    public sealed class BudgetRepository: Repository<Budgets,BudgetId>,IBudgetRepository
     {
         private readonly ProcurementDbContext _context;
 
@@ -39,7 +38,7 @@ namespace HospitalSystem.Infrastructure.Repositories.Procurement
                 ct);
         }
 
-        public async Task<IReadOnlyList<Budget>> GetByDepartmentAsync(
+        public async Task<IReadOnlyList<Budgets>>GetByDepartmentAsync(
             DepartmentId departmentId,
             CancellationToken ct = default)
         {

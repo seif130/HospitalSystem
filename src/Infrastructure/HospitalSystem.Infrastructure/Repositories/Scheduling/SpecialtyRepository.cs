@@ -1,6 +1,4 @@
-﻿using HospitalSystem.Application.Modules.Scheduling.Specialty.Command.CreateSpecialty;
-using HospitalSystem.Application.Shared.Messaging;
-using HospitalSystem.Domain.Identifiers;
+﻿using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Modules.Scheduling.Specialties;
 using HospitalSystem.Domain.Modules.Scheduling.Specialties.Contract;
 using HospitalSystem.Infrastructure.Contexts.DbContextsCore;

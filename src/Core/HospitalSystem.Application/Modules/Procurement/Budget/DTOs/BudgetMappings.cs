@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HospitalSystem.Domain.Modules.Procurement.Budgets;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,7 +7,7 @@ namespace HospitalSystem.Application.Modules.Procurement.Budget.DTOs
 {
     public static class BudgetMappings
     {
-        public static BudgetDto ToDto(this Budget budget)
+        public static BudgetDto ToDto(this Budgets budget)
         {
             return new BudgetDto(
                 budget.Id.Value,

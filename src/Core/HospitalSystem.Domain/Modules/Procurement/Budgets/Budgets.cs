@@ -7,7 +7,7 @@ using System.Text;
 
 namespace HospitalSystem.Domain.Modules.Procurement.Budgets;
 
-public sealed class Budget : AggregateRoot<BudgetId>
+public sealed class Budgets: AggregateRoot<BudgetId>
 {
     public DepartmentId DepartmentId { get; private set; } = null!;
 
@@ -30,11 +30,11 @@ public sealed class Budget : AggregateRoot<BudgetId>
             ? Money.Zero(AllocatedAmount.Currency)
             : AllocatedAmount.Subtract(SpentAmount);
 
-    private Budget()
+    private Budgets()
     {
     }
 
-    private Budget(
+    private Budgets(
         BudgetId id,
         DepartmentId departmentId,
         DateRange fiscalPeriod,
@@ -46,7 +46,7 @@ public sealed class Budget : AggregateRoot<BudgetId>
         AllocatedAmount = allocatedAmount;
     }
 
-    public static Budget Allocate(
+    public static Budgets Allocate(
         DepartmentId departmentId,
         DateRange fiscalPeriod,
         Money allocatedAmount)
@@ -66,7 +66,7 @@ public sealed class Budget : AggregateRoot<BudgetId>
                 "Allocated amount must be greater than zero.");
         }
 
-        return new Budget(
+        return new Budgets(
             BudgetId.New(),
             departmentId,
             fiscalPeriod,

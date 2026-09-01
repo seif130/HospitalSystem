@@ -2,7 +2,7 @@
 using HospitalSystem.Application.Shared.Messaging;
 using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Modules.Procurement.Budgets;
-using HospitalSystem.Domain.Modules.Procurement.Budget.Contract;
+using HospitalSystem.Domain.Modules.Procurement.Budgets.Contract;
 using HospitalSystem.Domain.Modules.Scheduling.Departments.Contract;
 using HospitalSystem.Domain.Reprository;
 using HospitalSystem.Domain.ValueObjects;
@@ -69,7 +69,7 @@ namespace HospitalSystem.Application.Modules.Procurement.Budget.Commands.Allocat
                 request.Amount,
                 request.Currency);
 
-            var budget = Budget.Allocate(
+            var budget = Budgets.Allocate(
                 departmentId,
                 fiscalPeriod,
                 amount);

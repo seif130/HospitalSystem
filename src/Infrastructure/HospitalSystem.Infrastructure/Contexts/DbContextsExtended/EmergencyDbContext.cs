@@ -1,4 +1,5 @@
-﻿using HospitalSystem.Domain.Modules.Emergency.Ambulance;
+﻿
+using HospitalSystem.Domain.Modules.Emergency.Ambulance;
 using HospitalSystem.Domain.Modules.Emergency.AmbulanceDispatch;
 using HospitalSystem.Domain.Modules.Emergency.EmergencyCase;
 using Microsoft.EntityFrameworkCore;

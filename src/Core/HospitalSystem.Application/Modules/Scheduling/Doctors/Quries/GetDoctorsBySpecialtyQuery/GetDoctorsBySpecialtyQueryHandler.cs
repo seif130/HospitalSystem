@@ -10,8 +10,7 @@ using System.Text;
 namespace HospitalSystem.Application.Modules.Scheduling.Doctors.Quries.GetDoctorsBySpecialtyQuery
 {
     public sealed class GetDoctorsBySpecialtyQueryHandler
-     : IQueryHandler<
-         GetDoctorsBySpecialtyQuery,
+     : IQueryHandler<GetDoctorsBySpecialtyQuery,
          IReadOnlyList<DoctorDto>>
     {
         private readonly IDoctorRepository _doctors;

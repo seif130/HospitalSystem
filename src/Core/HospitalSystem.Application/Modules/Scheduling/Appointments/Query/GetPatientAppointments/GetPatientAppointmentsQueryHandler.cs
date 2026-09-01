@@ -1,5 +1,4 @@
 ﻿using HospitalSystem.Application.Modules.Scheduling.Appointments.Dto;
-using HospitalSystem.Application.Modules.Scheduling.Appointments.GetDoctorSchedule;
 using HospitalSystem.Application.Shared.Common;
 using HospitalSystem.Application.Shared.Messaging;
 using HospitalSystem.Domain.Identifiers;

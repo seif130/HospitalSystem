@@ -2,7 +2,6 @@
 using HospitalSystem.Application.Shared.Common;
 using HospitalSystem.Application.Shared.Messaging;
 using HospitalSystem.Domain.Identifiers;
-using HospitalSystem.Domain.Modules.Scheduling.ClinicRooms;
 using HospitalSystem.Domain.Modules.Scheduling.ClinicRooms.Contract;
 using HospitalSystem.Domain.Modules.Scheduling.Departments.Contract;
 using HospitalSystem.Domain.Reprository;

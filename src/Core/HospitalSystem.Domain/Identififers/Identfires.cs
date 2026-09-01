@@ -141,11 +141,16 @@ public sealed record WaitlistId(Guid Value) : TypedId(Value)
 #endregion
 
 // procument
-
+#region procument
 public sealed record BudgetId(Guid Value) : TypedId(Value)
 {
     public static BudgetId New() => new(Guid.NewGuid());
 }
+public sealed record VendorContractId(Guid Value) : TypedId(Value)
+{
+    public static VendorContractId New() => new(Guid.NewGuid());
+}
+#endregion
 
 // Pharmacy & Inventory
 public sealed record PrescriptionId(Guid Value) : TypedId(Value)
@@ -368,4 +373,16 @@ public sealed record InsuranceProviderId(Guid Value) : TypedId(Value)
 public sealed record RefundId(Guid Value) : TypedId(Value)
 {
     public static RefundId New() => new(Guid.NewGuid());
+}
+
+//telemedicine
+
+public sealed record TelemedicinePrescriptionId(Guid Value) : TypedId(Value)
+{
+    public static TelemedicinePrescriptionId New() => new(Guid.NewGuid());
+}
+
+public sealed record TelemedicineSessionId(Guid Value) : TypedId(Value)
+{
+    public static TelemedicineSessionId New() => new(Guid.NewGuid());
 }

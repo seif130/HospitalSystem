@@ -1,4 +1,5 @@
-﻿using HospitalSystem.Domain.Modules.Telemedicine.TelemedicinePrescription;
+﻿
+using HospitalSystem.Domain.Modules.Telemedicine.TelemedicinePrescription;
 using HospitalSystem.Domain.Modules.Telemedicine.TelemedicineSession;
 using Microsoft.EntityFrameworkCore;
 using System;

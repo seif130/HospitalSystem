@@ -1,4 +1,5 @@
-﻿using HospitalSystem.Domain.Modules.Compliance.AuditLog;
+﻿
+using HospitalSystem.Domain.Modules.Compliance.AuditLog;
 using HospitalSystem.Domain.Modules.Compliance.ConsentRecord;
 using Microsoft.EntityFrameworkCore;
 using System;
