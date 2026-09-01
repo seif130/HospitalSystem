@@ -1,4 +1,5 @@
-﻿using HospitalSystem.Application.Modules.Scheduling.ClinicRooms.Commands.ChangeClinicRoomCapacity;
+﻿
+using HospitalSystem.Application.Modules.Scheduling.ClinicRooms.Commands.ChangeClinicRoomCapacity;
 using HospitalSystem.Application.Modules.Scheduling.ClinicRooms.Commands.ChangeClinicRoomDepartment;
 using HospitalSystem.Application.Modules.Scheduling.ClinicRooms.Commands.RenameClinicRoom;
 using HospitalSystem.Application.Modules.Scheduling.ClinicRooms.CreateClinicRoom;

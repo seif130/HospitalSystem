@@ -1,4 +1,5 @@
-﻿using HospitalSystem.Application.Modules.Scheduling.Specialty.Command.CreateSpecialty;
+﻿
+using HospitalSystem.Application.Modules.Scheduling.Specialty.Command.CreateSpecialty;
 using HospitalSystem.Application.Modules.Scheduling.Specialty.Command.DeleteSpecialty;
 using HospitalSystem.Application.Modules.Scheduling.Specialty.Command.ReactivateSpecialty;
 using HospitalSystem.Application.Modules.Scheduling.Specialty.Command.RenameSpecialty;

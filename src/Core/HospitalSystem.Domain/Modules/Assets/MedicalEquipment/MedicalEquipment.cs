@@ -1,4 +1,4 @@
-﻿using HospitalSystem.Domain.Identififers;
+﻿using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Modules.Assets.EquipmentMaintenanceLog.Enum;
 using HospitalSystem.Domain.Modules.Assets.MedicalEquipment.Enum;
 using HospitalSystem.Domain.Primitives;

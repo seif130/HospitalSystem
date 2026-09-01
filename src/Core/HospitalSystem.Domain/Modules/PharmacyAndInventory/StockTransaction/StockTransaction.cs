@@ -1,4 +1,4 @@
-﻿using HospitalSystem.Domain.Identififers;
+﻿using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Modules.PharmacyAndInventory.StockTransaction.Enums;
 using HospitalSystem.Domain.Primitives;
 using System;

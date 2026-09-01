@@ -1,4 +1,4 @@
-﻿using HospitalSystem.Domain.Identififers;
+﻿using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Modules.AdministrationHrPayroll.SystemLog.Enum;
 using HospitalSystem.Domain.Primitives;
 using System;
@@ -30,6 +30,5 @@ namespace HospitalSystem.Domain.Modules.AdministrationHrPayroll.SystemLog
             if (string.IsNullOrWhiteSpace(message)) throw new DomainException("Log message cannot be empty.");
             return new SystemLog(SystemLogId.New(), severity, source.Trim(), message.Trim());
         }
-        // Intentionally has no mutating behavior beyond creation — log entries are immutable once written.
     }
 }

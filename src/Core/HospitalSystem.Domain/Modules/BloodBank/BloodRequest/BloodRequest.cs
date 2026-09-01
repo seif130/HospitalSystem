@@ -1,5 +1,6 @@
 ﻿using HospitalSystem.Domain.Enums;
-using HospitalSystem.Domain.Identififers;
+using HospitalSystem.Domain.Identifiers;
+using HospitalSystem.Domain.Modules.BloodBank.BloodRequest.Enum;
 using HospitalSystem.Domain.Primitives;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace HospitalSystem.Domain.Modules.BloodBank.BloodRequest
             if (unitsRequested <= 0) throw new DomainException("Units requested must be greater than zero.");
             var request = new BloodRequest(BloodRequestId.New(), patientId, requiredBloodType, unitsRequested, urgency);
             if (urgency == RequestUrgency.Emergency)
-                request.RaiseDomainEvent(new EmergencyBloodRequestedDomainEvent(request.Id, patientId, requiredBloodType, unitsRequested));
+                request.AddDomainEvent(new EmergencyBloodRequestedDomainEvent(request.Id, patientId, requiredBloodType, unitsRequested));
             return request;
         }
 

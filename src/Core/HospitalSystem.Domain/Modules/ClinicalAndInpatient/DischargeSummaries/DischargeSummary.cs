@@ -1,5 +1,5 @@
 ﻿using HospitalSystem.Domain.Common;
-using HospitalSystem.Domain.Identififers;
+using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Primitives;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Text;
 
 namespace HospitalSystem.Domain.Modules.Clinic.DischargeSummaries
 {
-    public sealed class DischargeSummary : BaseEntity<Guid>
+    public sealed class DischargeSummary : BaseEntity<DischargeSummaryId>
     {
         public AdmissionId AdmissionId { get; private set; } = null!;
         public PatientId PatientId { get; private set; } = null!;

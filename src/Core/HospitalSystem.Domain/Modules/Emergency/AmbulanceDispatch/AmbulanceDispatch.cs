@@ -1,4 +1,4 @@
-﻿using HospitalSystem.Domain.Identififers;
+﻿using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Modules.Emergency.AmbulanceDispatch.Enum;
 using HospitalSystem.Domain.Primitives;
 using System;

@@ -1,5 +1,5 @@
-﻿using HospitalSystem.Domain.Identififers;
-using HospitalSystem.Domain.Modules.Administration.Enums;
+﻿using HospitalSystem.Domain.Identifiers;
+using HospitalSystem.Domain.Modules.Clinic.Surgeries.Enum;
 using HospitalSystem.Domain.Primitives;
 using System;
 using System.Collections.Generic;

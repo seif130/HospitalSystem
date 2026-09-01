@@ -1,5 +1,5 @@
 ﻿using HospitalSystem.Domain.Enums;
-using HospitalSystem.Domain.Identififers;
+using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Modules.Clinic.Patients.Enum;
 using HospitalSystem.Domain.Primitives;
 using HospitalSystem.Domain.ValueObjects;

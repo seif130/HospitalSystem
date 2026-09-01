@@ -1,5 +1,5 @@
 ﻿using HospitalSystem.Domain.Common;
-using HospitalSystem.Domain.Identififers;
+using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Primitives;
 using System;
 using System.Collections.Generic;

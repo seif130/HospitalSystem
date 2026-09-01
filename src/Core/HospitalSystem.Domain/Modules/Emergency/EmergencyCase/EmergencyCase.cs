@@ -1,4 +1,4 @@
-﻿using HospitalSystem.Domain.Identififers;
+﻿using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Modules.Emergency.EmergencyCase.Enum;
 using HospitalSystem.Domain.Modules.Emergency.TriageRecord.Enum;
 using HospitalSystem.Domain.Primitives;

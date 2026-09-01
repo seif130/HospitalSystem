@@ -1,6 +1,7 @@
-﻿using HospitalSystem.Domain.Identififers;
+﻿using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Modules.Documents.Document.Enum;
 using HospitalSystem.Domain.Primitives;
+using HospitalSystem.Domain.Modules.Documents.Attachment;
 using System;
 using System.Collections.Generic;
 using System.Text;

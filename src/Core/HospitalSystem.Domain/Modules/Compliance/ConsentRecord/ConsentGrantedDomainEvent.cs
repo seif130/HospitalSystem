@@ -1,4 +1,5 @@
-﻿using HospitalSystem.Domain.Identififers;
+﻿using HospitalSystem.Domain.Identifiers;
+using HospitalSystem.Domain.Identififers;
 using HospitalSystem.Domain.Modules.Compliance.ConsentRecord.Enum;
 using HospitalSystem.Domain.Primitives;
 using System;
