@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <Folder Include="Modules\ProcurementInfrastructure\" />
+    <Folder Include="Repositories\Scheduling\" />
   </ItemGroup>
 
   <PropertyGroup>

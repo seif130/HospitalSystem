@@ -1,51 +1,49 @@
 ﻿using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Modules.Scheduling.Doctors;
 using HospitalSystem.Domain.Modules.Scheduling.Doctors.Contract;
+using HospitalSystem.Domain.ValueObjects;
 using HospitalSystem.Infrastructure.Contexts.DbContextsCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace HospitalSystem.Infrastructure.Repositories.Scheduling
+namespace HospitalSystem.Infrastructure.Modules.SchedlingInfrastructure.Repositories
 {
-    public sealed class DoctorScheduleRepository
-        : Repository<DoctorSchedule, DoctorScheduleId>,
-          IDoctorScheduleRepository
+    public sealed class DoctorTimeOffRepository
+        : Repository<DoctorTimeOff, DoctorTimeOffId>,
+          IDoctorTimeOffRepository
     {
-        public DoctorScheduleRepository(
+        public DoctorTimeOffRepository(
             SchedulingDbContext context)
             : base(context)
         {
         }
 
-        public async Task<IReadOnlyList<DoctorSchedule>> GetByDoctorAsync(
+        public async Task<IReadOnlyList<DoctorTimeOff>> GetByDoctorAsync(
             DoctorId doctorId,
             CancellationToken ct = default)
         {
             return await DbSet
                 .AsNoTracking()
                 .Where(x => x.DoctorId == doctorId)
-                .OrderBy(x => x.DayOfWeek)
-                .ThenBy(x => x.StartTime)
+                .OrderBy(x => x.Period.Start)
                 .ToListAsync(ct);
         }
 
         public Task<bool> HasConflictAsync(
             DoctorId doctorId,
-            DayOfWeek dayOfWeek,
-            TimeSpan startTime,
-            TimeSpan endTime,
-            DoctorScheduleId? excludeId = null,
+            DateRange period,
+            DoctorTimeOffId? excludeId = null,
             CancellationToken ct = default)
         {
+            ArgumentNullException.ThrowIfNull(period);
+
             return DbSet.AnyAsync(
                 x =>
                     x.DoctorId == doctorId &&
-                    x.DayOfWeek == dayOfWeek &&
                     (excludeId == null || x.Id != excludeId) &&
-                    x.StartTime < endTime &&
-                    startTime < x.EndTime,
+                    x.Period.Overlaps(period),
                 ct);
         }
     }

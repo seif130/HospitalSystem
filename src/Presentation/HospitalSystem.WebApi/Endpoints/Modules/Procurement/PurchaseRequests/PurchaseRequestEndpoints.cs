@@ -23,145 +23,85 @@ public static class PurchaseRequestEndpoints
             .WithTags("Procurement - Purchase Requests");
 
         // GET: /api/procurement/purchase-requests/{purchaseRequestId}
-        group.MapGet(
-            "/{purchaseRequestId:guid}",
-            async (
-                Guid purchaseRequestId,
-                ISender sender,
-                IServiceProvider services,
-                CancellationToken cancellationToken) =>
-                EndpointHelper.SendAsync<
-                    GetPurchaseRequestByIdQuery,
-                    PurchaseRequestDto>(
-                    new GetPurchaseRequestByIdQuery(
-                        new PurchaseRequestId(purchaseRequestId)),
-                    sender,
-                    services,
-                    cancellationToken));
+        group.MapGet("/{purchaseRequestId:guid}", async (Guid purchaseRequestId, ISender sender, CancellationToken ct) =>
+        {
+            var result = await sender.Send(new GetPurchaseRequestByIdQuery(new PurchaseRequestId(purchaseRequestId)), ct);
+            return result.ToHttpResult();
+        });
 
         // GET: /api/procurement/purchase-requests/by-department/{departmentId}
-        group.MapGet(
-            "/by-department/{departmentId:guid}",
-            async (
-                Guid departmentId,
-                ISender sender,
-                IServiceProvider services,
-                CancellationToken cancellationToken,
-                int pageNumber = 1,
-                int pageSize = 20) =>
-                EndpointHelper.SendAsync<
-                    GetPurchaseRequestsByDepartmentQuery,
-                    PaginatedList<PurchaseRequestDto>>(
-                    new GetPurchaseRequestsByDepartmentQuery(
-                        new DepartmentId(departmentId),
-                        pageNumber,
-                        pageSize),
-                    sender,
-                    services,
-                    cancellationToken));
+        group.MapGet("/by-department/{departmentId:guid}", async (
+            Guid departmentId,
+            ISender sender,
+            CancellationToken ct,
+            int pageNumber = 1,
+            int pageSize = 20) =>
+        {
+            var result = await sender.Send(new GetPurchaseRequestsByDepartmentQuery(new DepartmentId(departmentId), pageNumber, pageSize), ct);
+            return result.ToHttpResult();
+        });
 
         // POST: /api/procurement/purchase-requests
-        group.MapPost(
-            "",
-            async (
-                CreatePurchaseRequest request,
-                ISender sender,
-                IServiceProvider services,
-                CancellationToken cancellationToken) =>
-                EndpointHelper.SendAsync<
-                    CreatePurchaseRequestCommand,
-                    PurchaseRequestId>(
-                    new CreatePurchaseRequestCommand(
-                        new DepartmentId(request.DepartmentId),
-                        request.Reason),
-                    sender,
-                    services,
-                    cancellationToken,
-                    id => TypedResults.Created(
-                        $"/api/procurement/purchase-requests/{id.Value}",
-                        id.Value)));
+        group.MapPost("", async (CreatePurchaseRequest request, ISender sender, CancellationToken ct) =>
+        {
+            var result = await sender.Send(new CreatePurchaseRequestCommand(
+                new DepartmentId(request.DepartmentId),
+                request.Reason), ct);
+
+            return result.ToCreatedResult(id => $"/api/procurement/purchase-requests/{id.Value}");
+        });
 
         // POST: /api/procurement/purchase-requests/{purchaseRequestId}/lines
-        group.MapPost(
-            "/{purchaseRequestId:guid}/lines",
-            async (
-                Guid purchaseRequestId,
-                AddLineRequest request,
-                ISender sender,
-                IServiceProvider services,
-                CancellationToken cancellationToken) =>
-                EndpointHelper.SendAsync(
-                    new AddPurchaseRequestLineCommand(
-                        new PurchaseRequestId(purchaseRequestId),
-                        request.ItemName,
-                        request.Quantity,
-                        request.EstimatedUnitPrice,
-                        request.Currency),
-                    sender,
-                    services,
-                    cancellationToken));
+        group.MapPost("/{purchaseRequestId:guid}/lines", async (
+            Guid purchaseRequestId,
+            AddLineRequest request,
+            ISender sender,
+            CancellationToken ct) =>
+        {
+            var result = await sender.Send(new AddPurchaseRequestLineCommand(
+                new PurchaseRequestId(purchaseRequestId),
+                request.ItemName,
+                request.Quantity,
+                request.EstimatedUnitPrice,
+                request.Currency), ct);
+
+            return result.ToHttpResult();
+        });
 
         // POST: /api/procurement/purchase-requests/{purchaseRequestId}/submit
-        group.MapPost(
-            "/{purchaseRequestId:guid}/submit",
-            async (
-                Guid purchaseRequestId,
-                ISender sender,
-                IServiceProvider services,
-                CancellationToken cancellationToken) =>
-                EndpointHelper.SendAsync(
-                    new SubmitPurchaseRequestCommand(
-                        new PurchaseRequestId(purchaseRequestId)),
-                    sender,
-                    services,
-                    cancellationToken));
+        group.MapPost("/{purchaseRequestId:guid}/submit", async (Guid purchaseRequestId, ISender sender, CancellationToken ct) =>
+        {
+            var result = await sender.Send(new SubmitPurchaseRequestCommand(new PurchaseRequestId(purchaseRequestId)), ct);
+            return result.ToHttpResult();
+        });
 
         // POST: /api/procurement/purchase-requests/{purchaseRequestId}/approve
-        group.MapPost(
-            "/{purchaseRequestId:guid}/approve",
-            async (
-                Guid purchaseRequestId,
-                ISender sender,
-                IServiceProvider services,
-                CancellationToken cancellationToken) =>
-                EndpointHelper.SendAsync(
-                    new ApprovePurchaseRequestCommand(
-                        new PurchaseRequestId(purchaseRequestId)),
-                    sender,
-                    services,
-                    cancellationToken));
+        group.MapPost("/{purchaseRequestId:guid}/approve", async (Guid purchaseRequestId, ISender sender, CancellationToken ct) =>
+        {
+            var result = await sender.Send(new ApprovePurchaseRequestCommand(new PurchaseRequestId(purchaseRequestId)), ct);
+            return result.ToHttpResult();
+        });
 
         // POST: /api/procurement/purchase-requests/{purchaseRequestId}/reject
-        group.MapPost(
-            "/{purchaseRequestId:guid}/reject",
-            async (
-                Guid purchaseRequestId,
-                RejectRequest request,
-                ISender sender,
-                IServiceProvider services,
-                CancellationToken cancellationToken) =>
-                EndpointHelper.SendAsync(
-                    new RejectPurchaseRequestCommand(
-                        new PurchaseRequestId(purchaseRequestId),
-                        request.Reason),
-                    sender,
-                    services,
-                    cancellationToken));
+        group.MapPost("/{purchaseRequestId:guid}/reject", async (
+            Guid purchaseRequestId,
+            RejectRequest request,
+            ISender sender,
+            CancellationToken ct) =>
+        {
+            var result = await sender.Send(new RejectPurchaseRequestCommand(
+                new PurchaseRequestId(purchaseRequestId),
+                request.Reason), ct);
+
+            return result.ToHttpResult();
+        });
 
         // POST: /api/procurement/purchase-requests/{purchaseRequestId}/cancel
-        group.MapPost(
-            "/{purchaseRequestId:guid}/cancel",
-            async (
-                Guid purchaseRequestId,
-                ISender sender,
-                IServiceProvider services,
-                CancellationToken cancellationToken) =>
-                EndpointHelper.SendAsync(
-                    new CancelPurchaseRequestCommand(
-                        new PurchaseRequestId(purchaseRequestId)),
-                    sender,
-                    services,
-                    cancellationToken));
+        group.MapPost("/{purchaseRequestId:guid}/cancel", async (Guid purchaseRequestId, ISender sender, CancellationToken ct) =>
+        {
+            var result = await sender.Send(new CancelPurchaseRequestCommand(new PurchaseRequestId(purchaseRequestId)), ct);
+            return result.ToHttpResult();
+        });
 
         return group;
     }

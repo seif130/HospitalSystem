@@ -3,13 +3,13 @@ using HospitalSystem.Domain.Modules.Scheduling.Appointments;
 using HospitalSystem.Domain.Modules.Scheduling.Appointments.Contract;
 using HospitalSystem.Domain.Modules.Scheduling.Appointments.Enums;
 using HospitalSystem.Domain.ValueObjects;
-using HospitalSystem.Infrastructure.Contexts.DbContextsCore;
+using HospitalSystem.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace HospitalSystem.Infrastructure.Repositories.Scheduling
+namespace HospitalSystem.Infrastructure.Modules.SchedlingInfrastructure.Repositories
 {
 
     public sealed class AppointmentRepository: Repository<Appointment, AppointmentId>, IAppointmentRepository

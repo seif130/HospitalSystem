@@ -5,13 +5,9 @@ using HospitalSystem.WebApi;
 using HospitalSystem.WebApi.Common;
 using HospitalSystem.WebApi.Extensions;
 using Microsoft.AspNetCore.Diagnostics;
-
 using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
-
-
-
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddEndpointsApiExplorer();

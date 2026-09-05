@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace HospitalSystem.Infrastructure.Repositories.Scheduling
+namespace HospitalSystem.Infrastructure.Modules.SchedlingInfrastructure.Repositories
 {
     public sealed class DoctorRepository
         : Repository<Doctor, DoctorId>,

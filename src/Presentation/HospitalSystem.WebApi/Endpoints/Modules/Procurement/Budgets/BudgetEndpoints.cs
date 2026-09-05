@@ -13,90 +13,58 @@ namespace HospitalSystem.WebApi.Endpoints.Modules.Procurement.Budgets;
 
 public static class BudgetEndpoints
 {
-    public static RouteGroupBuilder MapBudgetEndpoints(
-     this IEndpointRouteBuilder app)
+    public static IEndpointRouteBuilder MapBudgetEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app
-            .MapGroup("/api/hospitalsystem/procurement/budgets")
+        var group = app.MapGroup("/api/hospitalsystem/procurement/budgets")
             .WithTags("Procurement - Budgets");
 
-        group.MapGet(
-            "/{budgetId:guid}",
-            async (
-                Guid budgetId,
-                ISender sender,
-                IServiceProvider services,
-                CancellationToken cancellationToken) =>
-                EndpointHelper.SendAsync<
-                    GetBudgetByIdQuery,
-                    BudgetDto>(
-                    new GetBudgetByIdQuery(
-                        new BudgetId(budgetId)),
-                    sender,
-                    services,
-                    cancellationToken));
+        group.MapGet("/{budgetId:guid}", async (Guid budgetId, ISender sender, CancellationToken ct) =>
+        {
+            var result = await sender.Send(new GetBudgetByIdQuery(new BudgetId(budgetId)), ct);
+            return result.ToHttpResult();
+        });
 
-        group.MapGet(
-            "/by-department/{departmentId:guid}",
-            async (
-                Guid departmentId,
-                ISender sender,
-                IServiceProvider services,
-                CancellationToken cancellationToken,
-                int pageNumber = 1,
-                int pageSize = 20) =>
-                EndpointHelper.SendAsync<
-                    GetBudgetsByDepartmentQuery,
-                    PaginatedList<BudgetDto>>(
-                    new GetBudgetsByDepartmentQuery(
-                        new DepartmentId(departmentId),
-                        pageNumber,
-                        pageSize),
-                    sender,
-                    services,
-                    cancellationToken));
+        group.MapGet("/by-department/{departmentId:guid}", async (
+            Guid departmentId,
+            ISender sender,
+            CancellationToken ct,
+            int pageNumber = 1,
+            int pageSize = 20) =>
+        {
+            var result = await sender.Send(
+                new GetBudgetsByDepartmentQuery(new DepartmentId(departmentId), pageNumber, pageSize), ct);
+            return result.ToHttpResult();
+        });
 
-        group.MapPost(
-            "",
-            async (
-                AllocateBudgetRequest request,
-                ISender sender,
-                IServiceProvider services,
-                CancellationToken cancellationToken) =>
-                EndpointHelper.SendAsync<
-                    AllocateBudgetCommand,
-                    BudgetId>(
-                    new AllocateBudgetCommand(
-                        new DepartmentId(request.DepartmentId),
-                        request.FiscalStart,
-                        request.FiscalEnd,
-                        request.Amount,
-                        request.Currency),
-                    sender,
-                    services,
-                    cancellationToken,
-                    id => TypedResults.Created(
-                        $"/api/hospitalsystem/procurement/budgets/{id.Value}",
-                        id.Value)));
+        group.MapPost("", async (AllocateBudgetRequest request, ISender sender, CancellationToken ct) =>
+        {
+            var result = await sender.Send(
+                new AllocateBudgetCommand(
+                    new DepartmentId(request.DepartmentId),
+                    request.FiscalStart,
+                    request.FiscalEnd,
+                    request.Amount,
+                    request.Currency), ct);
 
-        group.MapPost(
-            "/{budgetId:guid}/expenses",
-            async (
-                Guid budgetId,
-                RecordExpenseRequest request,
-                ISender sender,
-                IServiceProvider services,
-                CancellationToken cancellationToken) =>
-                EndpointHelper.SendAsync(
-                    new RecordBudgetExpenseCommand(
-                        new BudgetId(budgetId),
-                        request.Description,
-                        request.Amount,
-                        request.Currency,
-                        request.IncurredOnUtc),
-                    sender,
-                    services,
-                    cancellationToken));
+            return result.ToCreatedResult(id => $"/api/hospitalsystem/procurement/budgets/{id.Value}");
+        });
+
+        group.MapPost("/{budgetId:guid}/expenses", async (
+            Guid budgetId,
+            RecordExpenseRequest request,
+            ISender sender,
+            CancellationToken ct) =>
+        {
+            var result = await sender.Send(
+                new RecordBudgetExpenseCommand(
+                    new BudgetId(budgetId),
+                    request.Description,
+                    request.Amount,
+                    request.Currency,
+                    request.IncurredOnUtc), ct);
+
+            return result.ToHttpResult();
+        });
 
         return group;
     }
