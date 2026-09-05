@@ -1,5 +1,6 @@
 using HospitalSystem.Domain.Identifiers;
 using HospitalSystem.Domain.Modules.Procurement.VendorContracts;
+using HospitalSystem.Domain.Modules.Procurement.VendorContracts.Contract;
 using Microsoft.EntityFrameworkCore;
 
 namespace HospitalSystem.Infrastructure.Modules.Procurement.Persistence.Repositories;

@@ -2,8 +2,10 @@ using HospitalSystem.Application;
 using HospitalSystem.Domain.Primitives;
 using HospitalSystem.Infrastructure;
 using HospitalSystem.WebApi;
+using HospitalSystem.WebApi.Common;
 using HospitalSystem.WebApi.Extensions;
 using Microsoft.AspNetCore.Diagnostics;
+
 using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddProblemDetails();
-builder.Services.AddExceptionHandler<HospitalSystem.WebApi.Common.GlobalExceptionHandler>();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddProcurementApplication();
