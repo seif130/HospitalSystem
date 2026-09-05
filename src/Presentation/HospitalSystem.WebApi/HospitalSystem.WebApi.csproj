@@ -22,8 +22,4 @@
     <ProjectReference Include="..\..\Core\HospitalSystem.Application\HospitalSystem.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Endpoints\Procurement\" />
-  </ItemGroup>
-
 </Project>

@@ -7,13 +7,17 @@ using System.Text;
 
 namespace HospitalSystem.Domain.Modules.Procurement.Budgets.Contract
 {
-    public interface IBudgetRepository: IRepository<Budgets,BudgetId>
+    public interface IBudgetRepository: IRepository<Budget,BudgetId>
     {
-        Task<bool> ExistsOverlappingPeriodAsync(
-            DepartmentId departmentId,DateRange fiscalPeriod,
-            CancellationToken ct = default);
+        Task<(IReadOnlyList<Budget> Items, int TotalCount)> GetByDepartmentAsync(
+         DepartmentId departmentId,
+         int pageNumber,
+         int pageSize,
+         CancellationToken ct = default);
 
-        Task<IReadOnlyList<Budgets>> GetByDepartmentAsync(
-            DepartmentId departmentId, CancellationToken ct = default);
+        Task<bool> ExistsOverlappingAsync(
+            DepartmentId departmentId,
+            DateRange fiscalPeriod,
+            CancellationToken ct = default);
     }
 }

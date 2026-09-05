@@ -1,4 +1,4 @@
-﻿using HospitalSystem.Domain.Common;
+using HospitalSystem.Domain.Common;
 using System;
 using System.Collections.Generic;
 using System.Text;

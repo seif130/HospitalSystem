@@ -9,26 +9,32 @@ namespace HospitalSystem.Domain.ValueObjects
     {
         public DateTime Start { get; }
         public DateTime? End { get; }
+        public bool IsOpen => End is null;
 
-        private DateRange(
-            DateTime start,
-            DateTime? end)
+        private DateRange(DateTime start, DateTime? end)
         {
             Start = start;
             End = end;
         }
 
-        public static DateRange Create(
-            DateTime start,
-            DateTime? end = null)
+        public static DateRange Create(DateTime start, DateTime? end = null)
         {
+            if (start.Kind == DateTimeKind.Local || end?.Kind == DateTimeKind.Local)
+                throw new DomainException("DateRange must use UTC or unspecified DateTime values.");
+
             if (end.HasValue && end.Value <= start)
                 throw new DomainException("End date must be greater than the start date.");
 
             return new DateRange(start, end);
         }
 
-        public bool IsOpen => End is null;
+        public bool Contains(DateTime instant)
+        {
+            if (instant.Kind == DateTimeKind.Local)
+                throw new DomainException("DateRange comparisons must use UTC or unspecified DateTime values.");
+
+            return instant >= Start && (!End.HasValue || instant < End.Value);
+        }
 
         public bool Overlaps(DateRange other)
         {
@@ -44,11 +50,10 @@ namespace HospitalSystem.Domain.ValueObjects
             yield return End;
         }
 
-        public override string ToString()
-        {
-            return End is null ? $"{Start:u} - Open" : $"{Start:u} - {End:u}";
-        }
+        public override string ToString() =>
+            End is null ? $"{Start:u} - Open" : $"{Start:u} - {End:u}";
     }
+
 
 
 }

@@ -3,10 +3,7 @@ namespace HospitalSystem.Application.Models;
 public sealed class PaginatedList<T>
 {
     public PaginatedList(
-        IReadOnlyCollection<T> items,
-        int totalCount,
-        int pageNumber,
-        int pageSize)
+        IReadOnlyCollection<T> items,int totalCount,int pageNumber,int pageSize)
     {
         if (pageNumber <= 0)
             throw new ArgumentOutOfRangeException(

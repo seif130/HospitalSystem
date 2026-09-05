@@ -1,4 +1,4 @@
-﻿using HospitalSystem.Domain.Primitives;
+using HospitalSystem.Domain.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Text;

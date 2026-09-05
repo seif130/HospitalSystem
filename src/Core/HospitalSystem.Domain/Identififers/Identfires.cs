@@ -140,17 +140,6 @@ public sealed record WaitlistId(Guid Value) : TypedId(Value)
 
 #endregion
 
-// procument
-#region procument
-public sealed record BudgetId(Guid Value) : TypedId(Value)
-{
-    public static BudgetId New() => new(Guid.NewGuid());
-}
-public sealed record VendorContractId(Guid Value) : TypedId(Value)
-{
-    public static VendorContractId New() => new(Guid.NewGuid());
-}
-#endregion
 
 // Pharmacy & Inventory
 public sealed record PrescriptionId(Guid Value) : TypedId(Value)
@@ -177,10 +166,6 @@ public sealed record BatchId (Guid Value) : TypedId(Value)
     public static BatchId New() => new(Guid.NewGuid());
 }
 
-public sealed record PurchaseOrderId(Guid Value) : TypedId(Value)
-{
-    public static PurchaseOrderId New() => new(Guid.NewGuid());
-}
 
 public sealed record StockTransactionId(Guid Value) : TypedId(Value)
 {

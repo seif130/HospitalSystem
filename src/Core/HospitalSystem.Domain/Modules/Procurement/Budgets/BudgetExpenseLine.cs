@@ -1,34 +1,28 @@
-﻿using HospitalSystem.Domain.Primitives;
+using HospitalSystem.Domain.Primitives;
 using HospitalSystem.Domain.ValueObjects;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace HospitalSystem.Domain.Modules.Procurement.Budgets
+namespace HospitalSystem.Domain.Modules.Procurement.Budgets;
+
+public sealed record BudgetExpenseLine
 {
-    public sealed record BudgetExpenseLine
+    public string Description { get; }
+    public Money Amount { get; }
+    public DateTime IncurredOnUtc { get; }
+
+    public BudgetExpenseLine(string description, Money amount, DateTime incurredOnUtc)
     {
-        public string Description { get; }
-        public Money Amount { get; }
-        public DateTime IncurredOnUtc { get; }
+        if (string.IsNullOrWhiteSpace(description))
+            throw new DomainException("Expense description is required.");
+        ArgumentNullException.ThrowIfNull(amount);
 
-        public BudgetExpenseLine(string description, Money amount,DateTime incurredOnUtc)
-        {
-            if (string.IsNullOrWhiteSpace(description))
-            {
-                throw new DomainException("Expense description is required.");
-            }
+        if (amount.Amount <= 0)
+            throw new DomainException("Expense amount must be greater than zero.");
 
-            ArgumentNullException.ThrowIfNull(amount);
+        if (incurredOnUtc.Kind == DateTimeKind.Local)
+            throw new DomainException("Expense date must use UTC or unspecified DateTime values.");
 
-            if (amount.Amount <= 0)
-            {
-                throw new DomainException("Expense amount must be greater than zero.");
-            }
-
-            Description = description.Trim();
-            Amount = amount;
-            IncurredOnUtc = incurredOnUtc;
-        }
+        Description = description.Trim();
+        Amount = amount;
+        IncurredOnUtc = incurredOnUtc;
     }
 }

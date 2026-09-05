@@ -2,6 +2,7 @@ using HospitalSystem.Application;
 using HospitalSystem.Domain.Primitives;
 using HospitalSystem.Infrastructure;
 using HospitalSystem.WebApi;
+using HospitalSystem.WebApi.Extensions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 
@@ -9,9 +10,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 
-builder.Services
-    .AddSchedulingInfrastructure(builder.Configuration)
-    .AddSchedulingApplication();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<HospitalSystem.WebApi.Common.GlobalExceptionHandler>();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddProcurementApplication();
+builder.Services.AddProcurementInfrastructure(builder.Configuration);
 
 
 builder.Services.AddEndpointsApiExplorer();
@@ -55,6 +59,8 @@ app.UseHttpsRedirection();
 
 
 app.MapSchedulingEndpoints();
+app.MapProcurementEndpoints();
+
 
 
 app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestampUtc = DateTime.UtcNow }))
